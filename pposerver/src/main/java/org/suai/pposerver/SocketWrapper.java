@@ -11,18 +11,18 @@ import java.util.concurrent.Executors;
 import java.util.logging.*;
 
 //receives packets and hands them to handler
-public class PacketListener implements Runnable {
+public class SocketWrapper implements Runnable {
     private static Logger logger = Logger.getLogger("");
 
     private static final String OK = "OK:";
 
     private InputHandler inputHandler;
     private int socketPort;
-    private DatagramSocket socket;
+    private static DatagramSocket socket;
     private boolean active = false;
     private ExecutorService executor = Executors.newFixedThreadPool(3);
 
-    public PacketListener(int portNumber, InputHandler inputHandler) {
+    public SocketWrapper(int portNumber, InputHandler inputHandler) {
         this.inputHandler = inputHandler;
 
         socketPort = portNumber;
@@ -47,10 +47,10 @@ public class PacketListener implements Runnable {
                 socket.receive(recvPacket);
 
                 inputHandler.handlePacket(new String(recvPacket.getData(), recvPacket.getOffset(),
-                        recvPacket.getLength()));
+                        recvPacket.getLength()) + "<ADDR>" + recvPacket.getAddress().toString());
 
                 //tell sender that package is received
-                //send(recvPacket.getAddress(), recvPacket.getPort(), OK);
+                send(recvPacket.getAddress(), recvPacket.getPort(), OK);
             }
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Failed to send packet", e);
@@ -60,13 +60,8 @@ public class PacketListener implements Runnable {
         }
     }
 
-    public synchronized void send(InetAddress addr, int port, String message) throws IOException {
+    public static synchronized void send(InetAddress addr, int port, String message) throws IOException {
         DatagramPacket sendPacket = new DatagramPacket(message.getBytes(), message.getBytes().length, addr, port);
         socket.send(sendPacket);
-    }
-
-    public static void main(String[] args) {
-
-
     }
 }

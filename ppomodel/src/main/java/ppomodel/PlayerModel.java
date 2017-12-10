@@ -1,6 +1,6 @@
 package ppomodel;
 
-public class PlayerModel {
+public class PlayerModel implements PPOGameObject {
     public static final int WIDTH = 10;
     public static final int HEIGHT = 50;
 
@@ -27,27 +27,37 @@ public class PlayerModel {
         }
     }
 
-    public int getDirection() {
+    public synchronized int getDirection() {
         return direction;
     }
 
-    public void setDirection(int dir) {
+    public synchronized void setDirection(int dir) {
         this.direction = dir;
     }
 
-    public int getX() {
+    public synchronized int getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public synchronized void setX(int x) {
         this.x = x;
     }
 
-    public int getY() {
+    public synchronized int getY() {
         return y;
     }
 
-    public void setY(int y) {
+    @Override
+    public void setVspeed(int newval) {
+        //vspeed = newval;
+    }
+
+    @Override
+    public void setHspeed(int newval) {
+        speed = newval;
+    }
+
+    public synchronized void setY(int y) {
         this.y = y;
     }
 }

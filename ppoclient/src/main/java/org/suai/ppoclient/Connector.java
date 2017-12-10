@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 
 public class Connector implements Runnable {
     private static Logger logger = Logger.getLogger("");
+    private static final int packetsPerSecond = 2;
+
 
     private boolean active = true;
     private InetAddress addr;
@@ -22,16 +24,12 @@ public class Connector implements Runnable {
     }
 
     public void run() {
-        int i = 0;
         try {
             while (getActive()) {
-                String str = "ACTIVE" + i;
-                i++;
-                socket.send(new DatagramPacket(str.getBytes(), str.getBytes().length,addr, port ));
-                Thread.sleep(200);
+                String str = "ACTIVE";
+                send(str);
+                Thread.sleep(1000 / packetsPerSecond);
             }
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Failed to send packet", e);
         } catch (InterruptedException e) {
             logger.log(Level.SEVERE, "Interrupted", e);
             Thread.currentThread().interrupt();
@@ -39,9 +37,13 @@ public class Connector implements Runnable {
 
     }
 
-    public void closeSocket() {
-        setActive(false);
-        socket.close();
+    public void send(String str) {
+        try {
+            socket.send(new DatagramPacket(str.getBytes(), str.getBytes().length, addr, port ));
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Failed to send packet", e);
+        }
+
     }
 
     public synchronized void setActive(boolean b) { active = b;}

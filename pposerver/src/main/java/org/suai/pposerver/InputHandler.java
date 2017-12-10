@@ -12,13 +12,13 @@ public class InputHandler implements Runnable {
     private static Logger logger = Logger.getLogger("");
     private static final boolean DEBUG = true;
 
-    private HashMap<InetAddress, UDPConnection> connections = new HashMap<>();
+    private HashMap<String, UDPConnection> connections = new HashMap<>();
     private LinkedBlockingQueue<String> packets = new LinkedBlockingQueue<>();
+    private ArrayList<GameSession> sessions = new ArrayList<>();
     private boolean active = true;
 
-    public synchronized void handlePacket(String str) throws InterruptedException {
+        public synchronized void handlePacket(String str) throws InterruptedException {
         packets.put(str);
-        //System.out.println("+" + new String(recvPacket.getData()));
     }
 
     public void run() {
@@ -26,13 +26,29 @@ public class InputHandler implements Runnable {
 
             while (getActive()) {
 
-                //UDPConnection connection = connections.get(addr);
-
-                //if (connection == null) {
-                    //connections.put(addr, new UDPConnection(addr));
                     try {
-                        String str = packets.take();
-                        logger.log(Level.INFO, str);
+                        String packetAddr = packets.take();
+                        String[] tokens = packetAddr.split("<ADDR>");
+                        String addr = tokens[1];
+                        String packetData = tokens[0];
+
+                        UDPConnection connection = connections.get(addr);
+
+                        if (connection == null) {
+                            connection = new UDPConnection(addr);
+                            connections.put(addr, new UDPConnection(addr));
+
+                            if (sessions.isEmpty() || sessions.get(sessions.size() - 1).getNumOfPlayers() == 2) {
+                                GameSession session = new GameSession(connection);
+                            } else {
+                                sessions.get(sessions.size() - 1).addConnection(connection);
+                            }
+                        }
+                        connection.handlePacket(packetData);
+
+                        String logEntry = String.format("Message from%s%n%s", addr, packetData);
+
+                        logger.log(Level.INFO, logEntry);
                     } catch (InterruptedException e) {
                         logger.log(Level.SEVERE, "Interrupted");
                         Thread.currentThread().interrupt();

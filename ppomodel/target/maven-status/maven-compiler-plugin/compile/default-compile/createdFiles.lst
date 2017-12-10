@@ -1,3 +1,4 @@
 ppomodel/PlayerModel.class
-ppomodel/PPOModel.class
+ppomodel/PPOGameObject.class
 ppomodel/BallModel.class
+ppomodel/PPOModel.class

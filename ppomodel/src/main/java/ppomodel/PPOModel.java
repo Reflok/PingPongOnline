@@ -11,6 +11,10 @@ public class PPOModel {
     public static final int FPS = 60;
     public static final int timePerFrame = 1000/FPS;
 
+    public static final int PLAYER1 = 1;
+    public static final int PLAYER2 = 2;
+    public static final int BALL = 0;
+
     private PlayerModel player1;
     private PlayerModel player2;
     private BallModel ball;
@@ -70,8 +74,19 @@ public class PPOModel {
         this.active = active;
     }
 
-    public PlayerModel getPlayer1() {return player1;}
-    public PlayerModel getPlayer2() {return player2;}
+    public synchronized PlayerModel getPlayer1() {return player1;}
+    public synchronized PlayerModel getPlayer2() {return player2;}
+    public synchronized BallModel getBall() {return ball;}
 
-    public BallModel getBall() {return ball;}
+    public synchronized PPOGameObject getEntity(int num) {
+        if (num == PLAYER1) {
+            return player1;
+        } else if (num == PLAYER2) {
+            return player2;
+        } else if(num == BALL) {
+            return ball;
+        }
+
+        return null;
+    }
 }

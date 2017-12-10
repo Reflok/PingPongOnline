@@ -2,6 +2,9 @@ package org.suai.pposerver;
 
 
 
+import ppomodel.PPOModel;
+import ppomodel.PlayerModel;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -13,6 +16,7 @@ import java.util.logging.*;
 public class PPOServer {
     private static Logger logger = Logger.getLogger("");
     private static final boolean APPEND = false;
+    public static boolean active = true;
 
     public static void main (String[] args) {
 
@@ -84,12 +88,57 @@ public class PPOServer {
         }*/
 
 
-        InputHandler inputHandler = new InputHandler();
+        /*InputHandler inputHandler = new InputHandler();
         new Thread(inputHandler).start();
 
-        PacketListener listener = new PacketListener(5555, inputHandler);
+        SocketWrapper listener = new SocketWrapper(5555, inputHandler);
         new Thread(listener).start();
-        logger.log(Level.FINEST, "PPOServer is set and ready");
+        logger.log(Level.FINEST, "PPOServer is set and ready");*/
+
+        PPOModel gameModel = new PPOModel(5, 10, 5);
+
+        long timer = System.nanoTime();
+        long wait;
+
+        try (DatagramSocket socket = new DatagramSocket(5555)) {
+            byte[] databuf = new byte[1024];
+            DatagramPacket packet = new DatagramPacket(databuf, databuf.length);
+            while (active) {
+
+                if (System.currentTimeMillis() < 10) {
+                    break;
+                }
+                socket.receive(packet);
+
+                String str = new String(packet.getData(), packet.getOffset(), packet.getLength());
+
+                if (str.equals("DOWN")) {
+                    gameModel.getPlayer1().setDirection(PlayerModel.DOWN);
+                } else if (str.equals("UP")) {
+                    gameModel.getPlayer1().setDirection(PlayerModel.UP);
+                } else if (str.equals("STOP")) {
+                    gameModel.getPlayer1().setDirection(PlayerModel.STOP);
+                }
+
+                wait = (1000 / 60 - (System.nanoTime() - timer) / 1000000);
+
+                if (wait <= 0) {
+                    gameModel.update();
+                    timer = System.nanoTime();
+                    String message = Integer.toString(gameModel.getBall().getX()) + ":" +
+                            Integer.toString(gameModel.getBall().getY()) + ":" +
+                            Integer.toString(gameModel.getPlayer1().getX()) + ":" +
+                            Integer.toString(gameModel.getPlayer1().getY()) + ":";
+
+                    socket.send(new DatagramPacket(message.getBytes(), message.getBytes().length, packet.getAddress(),
+                            packet.getPort()));
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
     }

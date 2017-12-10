@@ -1,6 +1,6 @@
 package ppomodel;
 
-public class BallModel {
+public class BallModel implements PPOGameObject {
     public static final int RADIUS = 10;
 
     private int x;
@@ -10,7 +10,7 @@ public class BallModel {
     private int hspeed;
     private int totalSpeed;
 
-    public BallModel(int totalSpeed) {
+    public BallModel(int totalSpeed){
         x = PPOModel.WIDTH / 2;
         y = PPOModel.HEIGHT / 2;
 
@@ -45,19 +45,19 @@ public class BallModel {
         }
     }
 
-    public int getX() {
+    public synchronized int getX() {
         return x;
     }
 
-    public void setX(int xPos) {
+    public synchronized void setX(int xPos) {
         this.x = xPos;
     }
 
-    public int getY() {
+    public synchronized int getY() {
         return y;
     }
 
-    public void setY(int yPos) {
+    public synchronized void setY(int yPos) {
         this.y = yPos;
     }
 
@@ -66,4 +66,7 @@ public class BallModel {
 
         }
     }
+
+    public void setVspeed(int newval) {vspeed = newval;}
+    public void setHspeed(int newval) {hspeed = newval;}
 }

@@ -39,7 +39,6 @@ public class PPOView extends JPanel implements KeyListener {
         imageGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
         frame = new JFrame("Ping Pong Online");
-        System.out.println("Hey");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         frame.setContentPane(this);
@@ -48,7 +47,6 @@ public class PPOView extends JPanel implements KeyListener {
         frame.setSize(frameWidth, frameHeight);
         frame.setVisible(true);
         requestFocus();
-        addKeyListener(this);
     }
 
     public void draw() {
