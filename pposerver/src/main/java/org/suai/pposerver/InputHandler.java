@@ -33,7 +33,6 @@ public class InputHandler implements Runnable {
                     try {
                         String str = packets.take();
                         logger.log(Level.INFO, str);
-                        Thread.sleep(300);
                     } catch (InterruptedException e) {
                         logger.log(Level.SEVERE, "Interrupted");
                         Thread.currentThread().interrupt();

@@ -42,6 +42,11 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.7.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.suai</groupId>
+            <artifactId>ppomodel</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <parent>

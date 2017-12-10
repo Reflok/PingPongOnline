@@ -50,7 +50,7 @@ public class PacketListener implements Runnable {
                         recvPacket.getLength()));
 
                 //tell sender that package is received
-                send(recvPacket.getAddress(), recvPacket.getPort(), OK);
+                //send(recvPacket.getAddress(), recvPacket.getPort(), OK);
             }
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Failed to send packet", e);

@@ -1,16 +1,19 @@
 package org.suai.ppoclient;
 
+import ppomodel.PPOModel;
+import ppoview.PPOView;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.logging.*;
 
-public class PPOClient {
+public class PPOClient implements Runnable {
     private static Logger logger = Logger.getLogger("");
     private static final boolean APPEND = false;
 
     public static void main (String[] args) {
         //logger set up
-        Logger.getLogger("").setLevel(Level.FINEST);
+        //Logger.getLogger("").setLevel(Level.FINEST);
 
         try {
             logger.setUseParentHandlers(false);
@@ -18,12 +21,13 @@ public class PPOClient {
             FileHandler fl1 = new FileHandler("clientExceptions.log", APPEND);
             logger.addHandler(fl1);
             fl1.setFormatter(new SimpleFormatter());
+            fl1.setFilter(logRecord -> logRecord.getLevel() == Level.SEVERE);
 
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Can't set up logger", e);
             return;
         }
-        DatagramSocket socket = null;
+        /*DatagramSocket socket = null;
 
         try  {
             socket = new DatagramSocket();
@@ -34,7 +38,7 @@ public class PPOClient {
 
             DatagramPacket packet = new DatagramPacket(databuffer, databuffer.length);
 
-            while (i < 10) {
+            /*while (i < 10) {
                 i++;
                 socket.receive(packet);
 
@@ -49,7 +53,39 @@ public class PPOClient {
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Socket receive problem", e);
         } finally {
+            assert socket != null;
             socket.close();
+        }*/
+        new Thread(new PPOClient()).start();
+    }
+
+    public void run() {
+        PPOModel game = new PPOModel(5, 5, 3);
+        PPOView view = new PPOView(game, PPOModel.WIDTH, PPOModel.HEIGHT);
+
+        boolean active = true;
+        long timer;
+        long wait;
+        int FPS = 60;
+        int timePerFrame = 1000/ FPS;
+
+        while (10 < System.currentTimeMillis()) {
+            timer = System.nanoTime();
+
+            game.update();
+            view.render();
+            view.draw();
+
+            wait = (timePerFrame - (System.nanoTime() - timer)/1000000);
+
+            if (wait > 0) {
+                try {
+                    Thread.sleep(wait);
+                } catch (InterruptedException e) {
+                    logger.log(Level.SEVERE, "Interrupted", e);
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
     }
 }
