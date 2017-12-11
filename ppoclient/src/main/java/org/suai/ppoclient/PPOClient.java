@@ -74,7 +74,7 @@ public class PPOClient implements Runnable, KeyListener {
         try {
             socket = new DatagramSocket();
 
-            connector = new Connector(socket, InetAddress.getByName("localhost"), 5555);
+            connector = new Connector(socket, InetAddress.getByName("192.168.1.17"), 5555);
             //new Thread(connector).start();
 
             //LinkedBlockingQueue<String> q = new LinkedBlockingQueue<>();
