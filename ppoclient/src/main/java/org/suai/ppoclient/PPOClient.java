@@ -81,6 +81,7 @@ public class PPOClient implements Runnable, KeyListener {
             game  = new PPOModel(5, 5, 3);
             view = new PPOView(game, PPOModel.WIDTH, PPOModel.HEIGHT);
             new Thread(new PPOClient()).start();
+            connector.send("NEW");
 
             while (10 < System.currentTimeMillis()) {
                 System.out.println("!");
@@ -98,6 +99,9 @@ public class PPOClient implements Runnable, KeyListener {
 
                     game.getPlayer1().setX(Integer.parseInt(data[2]));
                     game.getPlayer1().setY(Integer.parseInt(data[3]));
+
+                    game.getPlayer2().setX(Integer.parseInt(data[4]));
+                    game.getPlayer2().setY(Integer.parseInt(data[5]));
 
                     //game.getPlayer2().setX(Integer.parseInt(data[4]));
                     //game.getPlayer2().setY(Integer.parseInt(data[5]));

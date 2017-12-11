@@ -1,6 +1,5 @@
 package ppomodel;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class PPOModel {
@@ -11,9 +10,9 @@ public class PPOModel {
     public static final int FPS = 60;
     public static final int timePerFrame = 1000/FPS;
 
-    public static final int PLAYER1 = 1;
-    public static final int PLAYER2 = 2;
-    public static final int BALL = 0;
+    public static final int PLAYER_1 = 1;
+    public static final int PLAYER_2 = 2;
+    public static final int GAME_BALL = 0;
 
     private PlayerModel player1;
     private PlayerModel player2;
@@ -79,12 +78,20 @@ public class PPOModel {
     public synchronized BallModel getBall() {return ball;}
 
     public synchronized PPOGameObject getEntity(int num) {
-        if (num == PLAYER1) {
+        if (num == PLAYER_1) {
             return player1;
-        } else if (num == PLAYER2) {
+        } else if (num == PLAYER_2) {
             return player2;
-        } else if(num == BALL) {
+        } else if(num == GAME_BALL) {
             return ball;
+        }
+
+        return null;
+    }
+
+    public synchronized PlayerModel getPlayer(int num) {
+        if (num > 0 && num < 3) {
+            return (PlayerModel) getEntity(num);
         }
 
         return null;

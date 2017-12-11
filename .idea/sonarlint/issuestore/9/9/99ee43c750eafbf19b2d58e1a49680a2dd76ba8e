@@ -1,0 +1,10 @@
+
+usquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(²¨œúÿÿÿÿ
+tsquid:S1845"_Rename field "ball" to prevent any misunderstanding/clash with field "BALL" defined on line 16.(ùõ÷ƒ
+squid:S1845"eRename field "player2" to prevent any misunderstanding/clash with field "PLAYER2" defined on line 15.(‹şÀñşÿÿÿÿ
+Jsquid:S1068"0Remove this unused "player1Score" private field.(áë†¡ùÿÿÿÿ
+Dsquid:S1068"*Remove this unused "logger" private field.(ò¶÷¿üÿÿÿÿ
+Jsquid:S1068"0Remove this unused "player2Score" private field.(¦È–Èÿÿÿÿÿ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(“–ış
+Fsquid:S1068",Remove this unused "maxScore" private field.(›Ë­„ûÿÿÿÿ
+zsquid:S1845"eRename field "player1" to prevent any misunderstanding/clash with field "PLAYER1" defined on line 14.(‰ò¨Ù

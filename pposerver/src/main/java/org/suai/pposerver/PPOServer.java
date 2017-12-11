@@ -88,20 +88,21 @@ public class PPOServer {
         }*/
 
 
-        /*InputHandler inputHandler = new InputHandler();
+        InputHandler inputHandler = new InputHandler();
         new Thread(inputHandler).start();
 
         SocketWrapper listener = new SocketWrapper(5555, inputHandler);
         new Thread(listener).start();
-        logger.log(Level.FINEST, "PPOServer is set and ready");*/
+        logger.log(Level.FINEST, "PPOServer is set and ready");
 
-        PPOModel gameModel = new PPOModel(5, 10, 5);
+        /*PPOModel gameModel = new PPOModel(5, 10, 5);
 
         long timer = System.nanoTime();
         long wait;
 
         try (DatagramSocket socket = new DatagramSocket(5555)) {
             byte[] databuf = new byte[1024];
+
             DatagramPacket packet = new DatagramPacket(databuf, databuf.length);
             while (active) {
 
@@ -125,7 +126,7 @@ public class PPOServer {
                 if (wait <= 0) {
                     gameModel.update();
                     timer = System.nanoTime();
-                    String message = Integer.toString(gameModel.getBall().getX()) + ":" +
+                    String message = 1 + ":" + Integer.toString(gameModel.getBall().getX()) + ":" +
                             Integer.toString(gameModel.getBall().getY()) + ":" +
                             Integer.toString(gameModel.getPlayer1().getX()) + ":" +
                             Integer.toString(gameModel.getPlayer1().getY()) + ":";
@@ -138,7 +139,7 @@ public class PPOServer {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
 
     }

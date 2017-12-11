@@ -28,23 +28,31 @@ public class InputHandler implements Runnable {
 
                     try {
                         String packetAddr = packets.take();
-                        String[] tokens = packetAddr.split("<ADDR>");
-                        String addr = tokens[1];
+                        String[] tokens = packetAddr.split(":");
                         String packetData = tokens[0];
+                        String addr = tokens[1];
+                        if (addr.startsWith("/")) {
+                            addr = addr.substring(1, addr.length());
+                        }
+                        String port = tokens[2];
 
                         UDPConnection connection = connections.get(addr);
 
                         if (connection == null) {
-                            connection = new UDPConnection(addr);
-                            connections.put(addr, new UDPConnection(addr));
+                            connection = new UDPConnection(addr, Integer.parseInt(port));
+                            connections.put(addr, connection);
 
                             if (sessions.isEmpty() || sessions.get(sessions.size() - 1).getNumOfPlayers() == 2) {
-                                GameSession session = new GameSession(connection);
+                                sessions.add(new GameSession(connection));
+                                new Thread(sessions.get(sessions.size() - 1)).start();
                             } else {
                                 sessions.get(sessions.size() - 1).addConnection(connection);
                             }
+
+                        } else {
+                            connection.handlePacket(packetData);
                         }
-                        connection.handlePacket(packetData);
+
 
                         String logEntry = String.format("Message from%s%n%s", addr, packetData);
 

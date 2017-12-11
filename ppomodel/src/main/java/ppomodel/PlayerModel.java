@@ -25,6 +25,14 @@ public class PlayerModel implements PPOGameObject {
         if (direction != STOP) {
             y += speed * direction/Math.abs(direction);
         }
+
+        if (y > PPOModel.HEIGHT - HEIGHT / 2) {
+            y = PPOModel.HEIGHT - HEIGHT / 2;
+        }
+
+        if (y < HEIGHT / 2) {
+            y = HEIGHT / 2;
+        }
     }
 
     public synchronized int getDirection() {

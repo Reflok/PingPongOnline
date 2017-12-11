@@ -14,7 +14,7 @@ import java.util.logging.*;
 public class SocketWrapper implements Runnable {
     private static Logger logger = Logger.getLogger("");
 
-    private static final String OK = "OK:";
+    private static final String OK = "OK";
 
     private InputHandler inputHandler;
     private int socketPort;
@@ -47,7 +47,7 @@ public class SocketWrapper implements Runnable {
                 socket.receive(recvPacket);
 
                 inputHandler.handlePacket(new String(recvPacket.getData(), recvPacket.getOffset(),
-                        recvPacket.getLength()) + "<ADDR>" + recvPacket.getAddress().toString());
+                        recvPacket.getLength()) + ":" + recvPacket.getAddress().toString() + ":" + recvPacket.getPort());
 
                 //tell sender that package is received
                 send(recvPacket.getAddress(), recvPacket.getPort(), OK);
