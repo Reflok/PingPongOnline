@@ -1,6 +1,6 @@
 /home/charodey/IdeaProjects/PingPongOnline/pposerver/src/main/java/org/suai/pposerver/PPOServer.java
 /home/charodey/IdeaProjects/PingPongOnline/pposerver/src/main/java/org/suai/pposerver/InputHandler.java
+/home/charodey/IdeaProjects/PingPongOnline/pposerver/src/main/java/org/suai/pposerver/ppostate/PPOState.java
 /home/charodey/IdeaProjects/PingPongOnline/pposerver/src/main/java/org/suai/pposerver/SocketWrapper.java
 /home/charodey/IdeaProjects/PingPongOnline/pposerver/src/main/java/org/suai/pposerver/GameSession.java
 /home/charodey/IdeaProjects/PingPongOnline/pposerver/src/main/java/org/suai/pposerver/UDPConnection.java
-/home/charodey/IdeaProjects/PingPongOnline/pposerver/src/main/java/org/suai/pposerver/PPOState.java

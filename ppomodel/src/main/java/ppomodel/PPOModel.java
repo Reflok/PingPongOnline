@@ -19,8 +19,8 @@ public class PPOModel {
     private BallModel ball;
 
     private int maxScore;
-    private int player1Score;
-    private int player2Score;
+    private int player1Score = 0;
+    private int player2Score = 0;
 
     private boolean active;
 
@@ -46,6 +46,7 @@ public class PPOModel {
                 ball.setHspeed(-ball.getHspeed());
 
             } else {
+                score(PLAYER_1);
                 ball.reset();
             }
         }
@@ -57,6 +58,7 @@ public class PPOModel {
                 ball.setHspeed(-ball.getHspeed());
 
             } else {
+                score(PLAYER_2);
                 ball.reset();
                 ball.setHspeed(-ball.getHspeed());
             }
@@ -79,32 +81,14 @@ public class PPOModel {
         }
     }
 
-   /* @Override
-    public void run() {
-        active = true;
-        long timer;
-        long wait;
-
-        while (isActive()) {
-            timer = System.nanoTime();
-
-            player1.update();
-            player2.update();
-            ball.update();
-
-            wait = (timePerFrame - (System.nanoTime() - timer)/1000000);
-
-            if (wait > 0) {
-                try {
-                    Thread.sleep(wait);
-                } catch (InterruptedException e) {
-                    logger.log(Level.SEVERE, "Interrupted", e);
-                    Thread.currentThread().interrupt();
-                }
-            }
+    public void score(int playerNum) {
+        if (playerNum == PLAYER_1) {
+            player1Score++;
+        } else if(playerNum == PLAYER_2) {
+            player2Score++;
         }
+    }
 
-    }*/
 
     public synchronized boolean isActive() {
         return active;
