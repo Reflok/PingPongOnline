@@ -11,38 +11,24 @@ public class BallModel implements PPOGameObject {
     private int totalSpeed;
 
     public BallModel(int totalSpeed){
-        x = PPOModel.WIDTH / 2;
-        y = PPOModel.HEIGHT / 2;
-
-        vspeed = 5;
-        hspeed = 0;
+        reset();
 
         this.totalSpeed = totalSpeed;
     }
 
     public void update() {
-        x += vspeed;
-        y += hspeed;
+        y += vspeed;
+        x += hspeed;
 
-        if (x < RADIUS) {
-            x = RADIUS;
-            vspeed = -vspeed;
-        }
 
-        if (x > PPOModel.WIDTH - RADIUS) {
-            x = PPOModel.WIDTH - RADIUS;
-            vspeed = -vspeed;
-        }
+    }
 
-        if (y < RADIUS) {
-            y = RADIUS;
-            hspeed = -hspeed;
-        }
+    public void reset() {
+        x = PPOModel.WIDTH / 2;
+        y = PPOModel.HEIGHT / 2;
 
-        if (y > PPOModel.HEIGHT - RADIUS) {
-            y = PPOModel.HEIGHT - RADIUS;
-            hspeed = -hspeed;
-        }
+        vspeed = 4;
+        hspeed = -3;
     }
 
     public synchronized int getX() {
@@ -69,4 +55,7 @@ public class BallModel implements PPOGameObject {
 
     public void setVspeed(int newval) {vspeed = newval;}
     public void setHspeed(int newval) {hspeed = newval;}
+
+    public int getVspeed() {return vspeed;}
+    public int getHspeed() {return hspeed;}
 }

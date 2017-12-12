@@ -59,7 +59,6 @@ public class GameSession implements Runnable {
 
                 if (str != null) {
 
-
                     String[] tokens = str.split(":");
 
                     int playerNum = Integer.parseInt(tokens[0]);
@@ -76,7 +75,6 @@ public class GameSession implements Runnable {
 
                 if (wait <= 0) {
                     gameModel.update();
-                    timer = System.nanoTime();
 
                     String message = Integer.toString(gameModel.getBall().getX()) + ":" +
                             Integer.toString(gameModel.getBall().getY()) + ":" +

@@ -16,6 +16,8 @@ public class UDPConnection {
     private static final long timeoutTime = 1000;
     private GameSession session;
     private int playerNum;
+    private String name;
+
 
     public UDPConnection(String addr, int port) {
         address = addr;
@@ -59,5 +61,13 @@ public class UDPConnection {
 
     public void setPlayerNum(int playerNum) {
         this.playerNum = playerNum;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -36,6 +36,47 @@ public class PPOModel {
         player1.update();
         player2.update();
         ball.update();
+        int ballX = ball.getX();
+        int ballY = ball.getY();
+
+        if (ballX < BallModel.RADIUS + PlayerModel.WIDTH) {
+            if (ballY - BallModel.RADIUS <= player1.getY() + PlayerModel.HEIGHT / 2 &&
+                    ballY + BallModel.RADIUS >= player1.getY() - PlayerModel.HEIGHT / 2) {
+                ball.setX(BallModel.RADIUS + PlayerModel.WIDTH);
+                ball.setHspeed(-ball.getHspeed());
+
+            } else {
+                ball.reset();
+            }
+        }
+
+        if (ballX > PPOModel.WIDTH - BallModel.RADIUS - PlayerModel.WIDTH) {
+            if (ballY - BallModel.RADIUS <= player2.getY() + PlayerModel.HEIGHT / 2 &&
+                    ballY + BallModel.RADIUS >= player2.getY() - PlayerModel.HEIGHT / 2) {
+                ball.setX(PPOModel.WIDTH - BallModel.RADIUS - PlayerModel.WIDTH);
+                ball.setHspeed(-ball.getHspeed());
+
+            } else {
+                ball.reset();
+                ball.setHspeed(-ball.getHspeed());
+            }
+            /*if (ballX > PPOModel.WIDTH - RADIUS) {
+                ball.reset();
+            } else {
+                ball.setX(PPOModel.WIDTH - RADIUS - PlayerModel.WIDTH);
+                ball.setVspeed(-ball.getVspeed());
+            }*/
+        }
+
+        if (ballY < BallModel.RADIUS) {
+            ball.setY(BallModel.RADIUS);
+            ball.setVspeed(-ball.getVspeed());
+        }
+
+        if (ballY > PPOModel.HEIGHT - BallModel.RADIUS) {
+            ball.setY(PPOModel.HEIGHT - BallModel.RADIUS);
+            ball.setVspeed(-ball.getVspeed());
+        }
     }
 
    /* @Override

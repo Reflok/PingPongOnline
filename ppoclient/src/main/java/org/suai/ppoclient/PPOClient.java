@@ -74,17 +74,16 @@ public class PPOClient implements Runnable, KeyListener {
         try {
             socket = new DatagramSocket();
 
-            connector = new Connector(socket, InetAddress.getByName("192.168.1.17"), 5555);
+            connector = new Connector(socket, InetAddress.getByName("localhost"), 5555);
             //new Thread(connector).start();
 
             //LinkedBlockingQueue<String> q = new LinkedBlockingQueue<>();
             game  = new PPOModel(5, 5, 3);
             view = new PPOView(game, PPOModel.WIDTH, PPOModel.HEIGHT);
             new Thread(new PPOClient()).start();
-            connector.send("NEW");
+            //connector.send("NEW");
 
             while (10 < System.currentTimeMillis()) {
-                System.out.println("!");
                 byte[] databuffer = new byte[1024];
                 packet = new DatagramPacket(databuffer, databuffer.length);
 
