@@ -21,6 +21,7 @@ public class Connector implements Runnable {
         this.socket = socket;
         this.addr = addr;
         this.port = port;
+
     }
 
     public void run() {

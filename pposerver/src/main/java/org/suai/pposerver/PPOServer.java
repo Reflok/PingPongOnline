@@ -51,97 +51,13 @@ public class PPOServer {
             return;
         }
 
-        //LinkedBlockingQueue<DatagramPacket> q = new LinkedBlockingQueue<>();
-        //ConsSTR c = new ConsSTR();
-        /*ConsPACKET c = new ConsPACKET();
-        new Thread(c).start();
-        int i = 0;
-        byte[] databuf = new byte[1024];
-        try (DatagramSocket socket = new DatagramSocket(5555)){
-            while (i < 10) {
-                DatagramPacket packet = new DatagramPacket(databuf, databuf.length);
-                i++;
-                socket.receive(packet);
-                String str = new String(packet.getData(), packet.getOffset(), packet.getLength());
-                System.out.println("Adding" + str);
-                //c.add(str);
-                c.add(packet);
-                c.show();
-                socket.send(new DatagramPacket("OK".getBytes(), "OK".getBytes().length, packet.getAddress(),
-                        packet.getPort()));
-
-            }
-            Thread.sleep(5000);
-        } catch (SocketException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
-        //new Thread(c).start();
-
-        if (System.currentTimeMillis() > 100) {
-            return;
-        }*/
-
 
         InputHandler inputHandler = new InputHandler();
         new Thread(inputHandler).start();
 
-        SocketWrapper listener = new SocketWrapper(5555, inputHandler);
+        SocketWrapper listener = new SocketWrapper(5000, inputHandler);
         new Thread(listener).start();
         logger.log(Level.FINEST, "PPOServer is set and ready");
-
-        /*PPOModel gameModel = new PPOModel(5, 10, 5);
-
-        long timer = System.nanoTime();
-        long wait;
-
-        try (DatagramSocket socket = new DatagramSocket(5555)) {
-            byte[] databuf = new byte[1024];
-
-            DatagramPacket packet = new DatagramPacket(databuf, databuf.length);
-            while (active) {
-
-                if (System.currentTimeMillis() < 10) {
-                    break;
-                }
-                socket.receive(packet);
-
-                String str = new String(packet.getData(), packet.getOffset(), packet.getLength());
-
-                if (str.equals("DOWN")) {
-                    gameModel.getPlayer1().setDirection(PlayerModel.DOWN);
-                } else if (str.equals("UP")) {
-                    gameModel.getPlayer1().setDirection(PlayerModel.UP);
-                } else if (str.equals("STOP")) {
-                    gameModel.getPlayer1().setDirection(PlayerModel.STOP);
-                }
-
-                wait = (1000 / 60 - (System.nanoTime() - timer) / 1000000);
-
-                if (wait <= 0) {
-                    gameModel.update();
-                    timer = System.nanoTime();
-                    String message = 1 + ":" + Integer.toString(gameModel.getBall().getX()) + ":" +
-                            Integer.toString(gameModel.getBall().getY()) + ":" +
-                            Integer.toString(gameModel.getPlayer1().getX()) + ":" +
-                            Integer.toString(gameModel.getPlayer1().getY()) + ":";
-
-                    socket.send(new DatagramPacket(message.getBytes(), message.getBytes().length, packet.getAddress(),
-                            packet.getPort()));
-                }
-            }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-
     }
 
     private static class ConsSTR implements Runnable {

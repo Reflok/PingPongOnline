@@ -2,15 +2,15 @@ package ppomodel;
 
 public class PlayerModel implements PPOGameObject {
     public static final int WIDTH = 10;
-    public static final int HEIGHT = 50;
+    public static final int HEIGHT = 80;
 
     public static final int UP = -1;
     public static final int STOP = 0;
     public static final int DOWN = 1;
 
-    private int x;
-    private int y;
-    private int speed;
+    private double x;
+    private double y;
+    private double speed;
 
     private int direction;// >0 - down, =0 stop, <0 up
 
@@ -43,29 +43,29 @@ public class PlayerModel implements PPOGameObject {
         this.direction = dir;
     }
 
-    public synchronized int getX() {
+    public synchronized double getX() {
         return x;
     }
 
-    public synchronized void setX(int x) {
+    public synchronized void setX(double x) {
         this.x = x;
     }
 
-    public synchronized int getY() {
+    public synchronized double getY() {
         return y;
+    }
+    public synchronized void setY(double y) {
+        this.y = y;
     }
 
     @Override
-    public void setVspeed(int newval) {
+    public void setVspeed(double newval) {
         //vspeed = newval;
     }
 
     @Override
-    public void setHspeed(int newval) {
+    public void setHspeed(double newval) {
         speed = newval;
     }
 
-    public synchronized void setY(int y) {
-        this.y = y;
-    }
 }

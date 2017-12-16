@@ -3,6 +3,7 @@ package org.suai.pposerver;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,7 +15,8 @@ public class InputHandler implements Runnable {
 
     private HashMap<String, UDPConnection> connections = new HashMap<>();
     private LinkedBlockingQueue<String> packets = new LinkedBlockingQueue<>();
-    private ArrayList<GameSession> sessions = new ArrayList<>();
+    //private ArrayList<GameSession> sessions = new ArrayList<>();
+    private HashMap<Integer, GameSession> sessions = new HashMap<>();
     private boolean active = true;
 
         public synchronized void handlePacket(String str) throws InterruptedException {
@@ -23,6 +25,7 @@ public class InputHandler implements Runnable {
 
     public void run() {
         //try {
+            int sessionId = 0;
 
             while (getActive()) {
 
@@ -38,23 +41,39 @@ public class InputHandler implements Runnable {
 
                         UDPConnection connection = connections.get(addr);
 
-                        if (connection == null) {
-                            connection = new UDPConnection(addr, Integer.parseInt(port));
-                            connections.put(addr, connection);
 
-                            if (sessions.isEmpty() || sessions.get(sessions.size() - 1).getNumOfPlayers() == 2) {
-                                sessions.add(new GameSession(connection));
-                                new Thread(sessions.get(sessions.size() - 1)).start();
-                            } else {
-                                sessions.get(sessions.size() - 1).addConnection(connection);
+                        if (connection == null) {
+                            connection = newConnection(packetData, addr, port);
+
+                            if (connection == null) {
+                                new UDPConnection(packetAddr, Integer.parseInt(port), null).send("FAIL");
+                                continue;
                             }
 
+                            connection.send("OK");
+                            connections.put(addr, connection);
+                        } else if (packetData.equals("SESSIONSDATA")) {
+                            connection.send(getSessionsInfo());
+                        } else if (packetData.startsWith("NEWSESSION")) {
+                            sessions.put(sessionId, new GameSession(connection));
+                            connection.send("OK:" + sessionId);
+                            sessionId++;
+
+                        } else if (packetData.startsWith("CONNECTTO=")) {
+                            GameSession session = sessions.get(Integer.parseInt(packetData.split("=")[1]));
+
+                            if (session != null && session.getNumOfPlayers() < 2) {
+                                session.addConnection(connection);
+                                connection.send("OK");
+                            } else {
+                                connection.send("FAIL");
+                            }
                         } else {
                             connection.handlePacket(packetData);
                         }
 
 
-                        String logEntry = String.format("Message from%s%n%s", addr, packetData);
+                        String logEntry = String.format("Message from %s%n%s", addr, packetData);
 
                         logger.log(Level.INFO, logEntry);
                     } catch (InterruptedException e) {
@@ -73,6 +92,32 @@ public class InputHandler implements Runnable {
             //logger.log(Level.SEVERE, "Interrupted", e);
             Thread.currentThread().interrupt();
         }*/
+    }
+
+    private String getSessionsInfo() {
+        StringBuilder msg = new StringBuilder();
+
+        for (int i = 0; i < sessions.size(); i++) {
+            if (sessions.get(i).getNumOfPlayers() < 2) {
+                msg.append(i).append(":");
+            }
+        }
+        return msg.toString();
+    }
+
+    private UDPConnection newConnection(String packetData, String addr, String port) {
+        UDPConnection connection;
+
+        for (UDPConnection c :connections.values()) {
+            if (c.getName().equals(packetData)) {
+                return null;
+            }
+        }
+
+        connection = new UDPConnection(addr, Integer.parseInt(port), packetData);
+        connections.put(addr, connection);
+
+        return connection;
     }
 
     public synchronized void setActive(boolean b) {active = b;}

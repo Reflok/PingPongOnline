@@ -14,7 +14,7 @@ import java.util.logging.*;
 public class SocketWrapper implements Runnable {
     private static Logger logger = Logger.getLogger("");
 
-    private static final String OK = "OK";
+    private static final String OK = "ACCEPTED";
 
     private InputHandler inputHandler;
     private int socketPort;
@@ -50,10 +50,10 @@ public class SocketWrapper implements Runnable {
                         recvPacket.getLength()) + ":" + recvPacket.getAddress().toString() + ":" + recvPacket.getPort());
 
                 //tell sender that package is received
-                send(recvPacket.getAddress(), recvPacket.getPort(), OK);
+                //send(recvPacket.getAddress(), recvPacket.getPort(), OK);
             }
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Failed to send packet", e);
+            logger.log(Level.SEVERE, "Failed to send or receive packet", e);
         } catch (InterruptedException e) {
             logger.log(Level.SEVERE, "Interrupted", e);
             Thread.currentThread().interrupt();

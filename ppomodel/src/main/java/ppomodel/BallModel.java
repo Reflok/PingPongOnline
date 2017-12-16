@@ -1,19 +1,23 @@
 package ppomodel;
 
+import java.util.Random;
+
 public class BallModel implements PPOGameObject {
     public static final int RADIUS = 10;
 
-    private int x;
-    private int y;
+    private double x;
+    private double y;
 
-    private int vspeed;
-    private int hspeed;
+    private double vspeed;
+    private double hspeed;
     private int totalSpeed;
+    private double angle;
+    private Random gen = new Random(System.currentTimeMillis());
 
     public BallModel(int totalSpeed){
+        this.totalSpeed = totalSpeed;
         reset();
 
-        this.totalSpeed = totalSpeed;
     }
 
     public void update() {
@@ -26,24 +30,25 @@ public class BallModel implements PPOGameObject {
     public void reset() {
         x = PPOModel.WIDTH / 2;
         y = PPOModel.HEIGHT / 2;
+        angle = -45 + gen.nextInt(90);
 
-        vspeed = 4;
-        hspeed = -3;
+        vspeed = totalSpeed * Math.sin(Math.toRadians(angle));
+        hspeed = -totalSpeed * Math.cos(Math.toRadians(angle));
     }
 
-    public synchronized int getX() {
+    public synchronized double getX() {
         return x;
     }
 
-    public synchronized void setX(int xPos) {
+    public synchronized void setX(double xPos) {
         this.x = xPos;
     }
 
-    public synchronized int getY() {
+    public synchronized double getY() {
         return y;
     }
 
-    public synchronized void setY(int yPos) {
+    public synchronized void setY(double yPos) {
         this.y = yPos;
     }
 
@@ -53,9 +58,17 @@ public class BallModel implements PPOGameObject {
         }
     }
 
-    public void setVspeed(int newval) {vspeed = newval;}
-    public void setHspeed(int newval) {hspeed = newval;}
+    public void setVspeed(double newval) {vspeed = newval;}
+    public void setHspeed(double newval) {hspeed = newval;}
 
-    public int getVspeed() {return vspeed;}
-    public int getHspeed() {return hspeed;}
+    public double getVspeed() {return vspeed;}
+    public double getHspeed() {return hspeed;}
+
+    public double getAngle() {return angle;}
+    public void setAngle(double newval) {
+        angle = newval;
+
+        vspeed = totalSpeed * Math.sin(Math.toRadians(angle));
+        hspeed = totalSpeed * Math.cos(Math.toRadians(angle));
+    }
 }

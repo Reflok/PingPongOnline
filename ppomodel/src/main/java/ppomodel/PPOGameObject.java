@@ -1,12 +1,12 @@
 package ppomodel;
 
 public interface PPOGameObject {
-    public int getX();
-    public int getY();
+    public double getX();
+    public double getY();
 
-    public void setX(int newval);
-    public void setY(int newval);
+    public void setX(double newval);
+    public void setY(double newval);
 
-    public void setVspeed(int newval);
-    public void setHspeed(int newval);
+    public void setVspeed(double newval);
+    public void setHspeed(double newval);
 }

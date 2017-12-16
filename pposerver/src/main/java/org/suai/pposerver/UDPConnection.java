@@ -16,12 +16,14 @@ public class UDPConnection {
     private static final long timeoutTime = 1000;
     private GameSession session;
     private int playerNum;
-    private String name;
+    private String name = null;
+    private boolean inGame = false;
 
 
-    public UDPConnection(String addr, int port) {
+    public UDPConnection(String addr, int port, String name) {
         address = addr;
         this.port = port;
+        this.name = name;
         timer = System.currentTimeMillis();
         session = null;
     }
@@ -36,7 +38,7 @@ public class UDPConnection {
     public void send(String message) {
         try {
             SocketWrapper.send(InetAddress.getByName(address), port, message);
-            System.out.println("Sending " + message + " to " + address + ":" + port);
+            //System.out.println("Sending " + message + " to " + address + ":" + port);
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Can't send", e);
         }
@@ -69,5 +71,15 @@ public class UDPConnection {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAddress() { return address;}
+
+    public boolean isInGame() {
+        return inGame;
+    }
+
+    public void setInGame(boolean inGame) {
+        this.inGame = inGame;
     }
 }

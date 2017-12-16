@@ -1,3 +1,4 @@
 org/suai/ppoclient/Connector.class
-ppoview/PPOView.class
+ppoview/PPOGameView.class
+ppoview/PPOMenuView.class
 org/suai/ppoclient/PPOClient.class

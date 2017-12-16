@@ -1,14 +1,12 @@
 package org.suai.ppoclient;
 
 import ppomodel.PPOModel;
-import ppoview.PPOView;
+import ppoview.PPOGameView;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.net.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.*;
 
 public class PPOClient implements Runnable, KeyListener {
@@ -16,9 +14,12 @@ public class PPOClient implements Runnable, KeyListener {
     private static final boolean APPEND = false;
 
     private static PPOModel game;
-    private static PPOView view;
+    private static PPOGameView view;
     private static Connector connector;
     private static String state = "STOP";
+    private boolean upPressed = false;
+    private boolean downPressed = false;
+    public boolean active = false;
 
 
     public static void main (String[] args) {
@@ -39,49 +40,33 @@ public class PPOClient implements Runnable, KeyListener {
             return;
         }
         DatagramSocket socket = null;
-        DatagramPacket packet = null;
-
-        /*try  {
-            socket = new DatagramSocket();
-            Connector connector = new Connector(socket, InetAddress.getByName("localhost"), 5555);
-            new Thread(connector).start();
-            int i = 0;
-            byte[] databuffer = new byte[1024];
-
-            packet = new DatagramPacket(databuffer, databuffer.length);
-
-            while (i < 10) {
-                i++;
-                socket.receive(packet);
-
-                System.out.println(new String(packet.getData(), packet.getOffset(), packet.getLength()));
-
-            }
-            connector.closeSocket();
-        } catch (SocketException e) {
-            logger.log(Level.SEVERE, "Failed to open socket", e);
-        } catch (UnknownHostException e) {
-            logger.log(Level.SEVERE, "Host error", e);
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Socket receive problem", e);
-        } finally {
-            assert socket != null;
-            socket.close();
-        }*/
-
-
+        DatagramPacket packet;
 
         try {
             socket = new DatagramSocket();
 
-            connector = new Connector(socket, InetAddress.getByName("localhost"), 5555);
+            connector = new Connector(socket, InetAddress.getByName("localhost"), 5000);
+
+            boolean f = false;
+            int i = 1;
+
+            while (!f) {
+                f = initConnection(socket,"Name" + i);
+                i++;
+            }
+
+            int sess = requestNewSession(socket);
+
+
+
             //new Thread(connector).start();
 
             //LinkedBlockingQueue<String> q = new LinkedBlockingQueue<>();
-            game  = new PPOModel(5, 5, 3);
-            view = new PPOView(game, PPOModel.WIDTH, PPOModel.HEIGHT);
+            game  = new PPOModel(5, 5, 3, "Name" + (i - 1));
+            view = new PPOGameView(game, PPOModel.WIDTH, PPOModel.HEIGHT);
             new Thread(new PPOClient()).start();
-            //connector.send("NEW");
+            Thread.sleep(2000);
+            connector.send("READY");
 
             while (10 < System.currentTimeMillis()) {
                 byte[] databuffer = new byte[1024];
@@ -102,37 +87,86 @@ public class PPOClient implements Runnable, KeyListener {
                     game.getPlayer2().setX(Integer.parseInt(data[4]));
                     game.getPlayer2().setY(Integer.parseInt(data[5]));
 
-                    //game.getPlayer2().setX(Integer.parseInt(data[4]));
-                    //game.getPlayer2().setY(Integer.parseInt(data[5]));
+                    game.setName1(data[6]);
+                    game.setName2(data[7]);
+
+                    game.setPlayer1Score(Integer.parseInt(data[8]));
+                    game.setPlayer2Score(Integer.parseInt(data[9]));
 
                 }
             }
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Can't receive packet", e);
+        } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, "Interrupted", e);
+            Thread.currentThread().interrupt();
         } finally {
             socket.close();
         }
     }
 
+    private static boolean initConnection(DatagramSocket socket, String name) throws IOException {
+        DatagramPacket packet;
+        connector.send(name);
+        byte[] buf = new byte[1024];
+        packet = new DatagramPacket(buf, buf.length);
+
+        socket.receive(packet);
+
+        String str = new String(packet.getData(), packet.getOffset(), packet.getLength());
+
+        if (str.equals("OK")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private static int requestNewSession(DatagramSocket socket) throws IOException {
+        DatagramPacket packet;
+        connector.send("NEWSESSION");
+        byte[] buf = new byte[1024];
+        packet = new DatagramPacket(buf, buf.length);
+
+        socket.receive(packet);
+
+        String str = new String(packet.getData(), packet.getOffset(), packet.getLength());
+
+        if (str.startsWith("OK:")) {
+            return Integer.parseInt(str.split(":")[1]);
+        } else {
+            return -1;
+        }
+    }
+
     public void run() {
         //PPOModel game = new PPOModel(5, 5, 3);
-        //PPOView view = new PPOView(game, PPOModel.WIDTH, PPOModel.HEIGHT);
+        //PPOGameView view = new PPOGameView(game, PPOModel.WIDTH, PPOModel.HEIGHT);
         view.addKeyListener(this);
 
         boolean active = true;
         long timer;
         long wait;
-        int FPS = 60;
+        int FPS = 200;
         int timePerFrame = 1000 / FPS;
         view.render();
         view.draw();
 
-        while (10 < System.currentTimeMillis()) {
+        while (active) {
             timer = System.nanoTime();
 
             //game.update();
             view.render();
             view.draw();
+
+            if (upPressed && downPressed || !downPressed && !upPressed) {
+                state = "STOP";
+            } else if (upPressed) {
+                state = "UP";
+            } else if (downPressed) {
+                state = "DOWN";
+            }
+
             connector.send(state);
 
             wait = (timePerFrame - (System.nanoTime() - timer)/1000000);
@@ -156,8 +190,10 @@ public class PPOClient implements Runnable, KeyListener {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_W) {
             state = "UP";
+            upPressed = true;
         } else if (e.getKeyCode() == KeyEvent.VK_S) {
             state = "DOWN";
+            downPressed = true;
 
         }
     }
@@ -168,5 +204,12 @@ public class PPOClient implements Runnable, KeyListener {
             state = "STOP";
         }
 
+        if (e.getKeyCode() == KeyEvent.VK_W) {
+            upPressed = false;
+        } else if (e.getKeyCode() == KeyEvent.VK_S) {
+            downPressed = false;
+        } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            connector.send("READY");
+        }
     }
 }
