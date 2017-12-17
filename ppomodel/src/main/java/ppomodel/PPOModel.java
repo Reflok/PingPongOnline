@@ -14,6 +14,14 @@ public class PPOModel {
     public static final int PLAYER_2 = 2;
     public static final int GAME_BALL = 0;
 
+    public static final int STATE_WAIT = 0;
+    public static final int STATE_PLAY = 1;
+    public static final int STATE_START1 = 2;
+    public static final int STATE_START2 = 3;
+    public static final int STATE_WIN1 = 4;
+    public static final int STATE_WIN2 = 5;
+
+
     private PlayerModel player1;
     private PlayerModel player2;
     private BallModel ball;
@@ -28,6 +36,9 @@ public class PPOModel {
     private boolean active;
     private long timer;
 
+    private int state = STATE_WAIT;
+
+
     public PPOModel(int maxScore, int totalSpeed, int playerSpeed, String name) {
         this.maxScore = maxScore;
 
@@ -40,6 +51,10 @@ public class PPOModel {
     }
 
     public void update() {
+        if (!(state == STATE_PLAY)) {
+            return;
+        }
+
         player1.update();
         player2.update();
         ball.update();
@@ -47,24 +62,23 @@ public class PPOModel {
         int ballY = (int) ball.getY();
 
         if (ballX < BallModel.RADIUS + PlayerModel.WIDTH) {
-            if (ballY - BallModel.RADIUS <= player1.getY() + PlayerModel.HEIGHT / 2 &&
-                    ballY + BallModel.RADIUS >= player1.getY() - PlayerModel.HEIGHT / 2) {
-                ball.setX(BallModel.RADIUS + PlayerModel.WIDTH);
-                double diff = (ballY - player1.getY()) / (PlayerModel.HEIGHT / 2);
+            if (ballY - BallModel.RADIUS <= player1.getY() + (double)PlayerModel.HEIGHT / 2 &&
+                    ballY + BallModel.RADIUS >= player1.getY() - (double)PlayerModel.HEIGHT / 2) {
+                ball.setX(BallModel.RADIUS + (double)PlayerModel.WIDTH);
+                double diff = (ballY - player1.getY()) / ((double)PlayerModel.HEIGHT / 2);
 
                 ball.setAngle(diff * 60);
 
             } else {
                 score(PLAYER_2);
-                ball.reset();
             }
         }
 
         if (ballX > PPOModel.WIDTH - BallModel.RADIUS - PlayerModel.WIDTH) {
-            if (ballY - BallModel.RADIUS <= player2.getY() + PlayerModel.HEIGHT / 2 &&
-                    ballY + BallModel.RADIUS >= player2.getY() - PlayerModel.HEIGHT / 2) {
+            if (ballY - BallModel.RADIUS <= player2.getY() + (double)PlayerModel.HEIGHT / 2 &&
+                    ballY + BallModel.RADIUS >= player2.getY() - (double)PlayerModel.HEIGHT / 2) {
                 ball.setX(PPOModel.WIDTH - BallModel.RADIUS - PlayerModel.WIDTH);
-                double diff = (ballY - player2.getY()) / (PlayerModel.HEIGHT / 2);
+                double diff = (ballY - player2.getY()) / ((double)PlayerModel.HEIGHT / 2);
 
                 //ball.setAngle((int)(ball.getAngle() + 15*diff/Math.abs(90 - ball.getAngle())), true );
                 ball.setAngle(diff * 60);
@@ -72,7 +86,6 @@ public class PPOModel {
 
             } else {
                 score(PLAYER_1);
-                ball.reset();
                 ball.setHspeed(-ball.getHspeed());
             }
             /*if (ballX > PPOModel.WIDTH - RADIUS) {
@@ -94,17 +107,33 @@ public class PPOModel {
         }
     }
 
+    public void start() {
+        state = STATE_PLAY;
+        ball.start();
+    }
+
     public void score(int playerNum) {
         if (playerNum == PLAYER_1) {
             player1Score++;
-            active = false;
+            state = STATE_START1;
+            ball.reset();
+
+            if (player1Score > maxScore) {
+                state = STATE_WIN1;
+            }
         } else if(playerNum == PLAYER_2) {
             player2Score++;
-            active = false;
+            state = STATE_START2;
+            ball.reset();
+
+            if (player1Score > maxScore) {
+                state = STATE_WIN2;
+            }
         }
 
         timer = System.currentTimeMillis();
     }
+
 
 
     public synchronized boolean isActive() {
@@ -169,5 +198,13 @@ public class PPOModel {
 
     public void setPlayer2Score(int player2Score) {
         this.player2Score = player2Score;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 }

@@ -69,6 +69,7 @@ public class InputHandler implements Runnable {
 
                             if (session != null && session.getNumOfPlayers() < 2) {
                                 session.addConnection(connection);
+                                System.out.println(sessions);
                                 //connection.send("OK");
                             } else {
                                 connection.send("FAIL");
@@ -89,6 +90,7 @@ public class InputHandler implements Runnable {
                             }
 
                             sessions.remove(connection.getSession().getSessnum());
+                            System.out.println(sessions);
                             connection.getSession().addPacket("END");
                             System.out.println(connections);
 
@@ -121,10 +123,11 @@ public class InputHandler implements Runnable {
     private String getSessionsInfo() {
         StringBuilder msg = new StringBuilder();
         msg.append("DATA:");
+        System.out.println(sessions + " " + sessions.size());
 
-        for (int i = 0; i < sessions.size(); i++) {
-            if (sessions.get(i).getNumOfPlayers() < 2) {
-                msg.append(i).append(":");
+        for (Map.Entry<Integer, GameSession> entry : sessions.entrySet()) {
+            if (entry.getValue().getNumOfPlayers() < 2) {
+                msg.append(entry.getKey()).append(":");
             }
         }
         return msg.toString();

@@ -49,8 +49,8 @@ public class GameSession implements Runnable {
         this.connection2 = connection2;
         connection2.setSession(this);
         connection2.setPlayerNum(2);
-        state = STATE_BEGIN1;
         gameModel.setName2(connection2.getName());
+        gameModel.setState(PPOModel.STATE_START1);
 
     }
 
@@ -143,24 +143,27 @@ public class GameSession implements Runnable {
 
         int playerNum = Integer.parseInt(tokens[0]);
 
-        if (tokens[1].equals("DOWN")) {
-            gameModel.getPlayer(playerNum).setDirection(PlayerModel.DOWN);
-        } else if (tokens[1].equals("UP")) {
-            gameModel.getPlayer(playerNum).setDirection(PlayerModel.UP);
-        } else if (tokens[1].equals("STOP")) {
-            gameModel.getPlayer(playerNum).setDirection(PlayerModel.STOP);
-        } else if (tokens[1].equals("READY")) {
-            if (playerNum == 1) {
-                p1ready = true;
-            } else if (playerNum == 2) {
-                p2ready = true;
+        if (gameModel.getState() == PPOModel.STATE_PLAY) {
+            if (tokens[1].equals("DOWN")) {
+                gameModel.getPlayer(playerNum).setDirection(PlayerModel.DOWN);
+            } else if (tokens[1].equals("UP")) {
+                gameModel.getPlayer(playerNum).setDirection(PlayerModel.UP);
+            } else if (tokens[1].equals("STOP")) {
+                gameModel.getPlayer(playerNum).setDirection(PlayerModel.STOP);
+            } else if (tokens[1].equals("READY")) {
+                if (playerNum == 1) {
+                    p1ready = true;
+                } else if (playerNum == 2) {
+                    p2ready = true;
+                }
             }
-
-            if (p1ready && p2ready) {
-                gameModel = new PPOModel(5, 6, 4, connection1.getName());
-                gameModel.setName2(connection2.getName());
-            }
+        } else if (gameModel.getState() == PPOModel.STATE_START1 && playerNum == 1 && tokens[1].equals("SPACE")) {
+            gameModel.start();
+            gameModel.getBall().setHspeed(-gameModel.getBall().getHspeed());
+        } else if (gameModel.getState() == PPOModel.STATE_START2 && playerNum == 2 && tokens[1].equals("SPACE")) {
+            gameModel.start();
         }
+        System.out.println(gameModel.getState() + " " + playerNum + " " + tokens[1]);
     }
 
     public int getState() {

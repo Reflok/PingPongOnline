@@ -71,7 +71,9 @@ public class ViewUpdater implements Runnable, KeyListener {
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             setActive(false);
             view.dispose();
-
+            connector.send("END");
+        } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            connector.send("SPACE");
         }
     }
 

@@ -30,6 +30,10 @@ public class BallModel implements PPOGameObject {
     public void reset() {
         x = PPOModel.WIDTH / 2;
         y = PPOModel.HEIGHT / 2;
+
+    }
+
+    public void start() {
         angle = -45 + gen.nextInt(90);
 
         vspeed = totalSpeed * Math.sin(Math.toRadians(angle));

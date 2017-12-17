@@ -49,7 +49,6 @@ public class PPOGame implements Runnable, WindowListener {
         modelUpdater.setActive(false);
         viewUpdater.setActive(false);
         menu.setVisible(true);
-        connector.send("END");
     }
 
     @Override
