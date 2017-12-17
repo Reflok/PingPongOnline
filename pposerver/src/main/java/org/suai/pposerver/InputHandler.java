@@ -59,8 +59,9 @@ public class InputHandler implements Runnable {
                             connection.send("OK");
                             connections.put(addr+port, connection);
                             System.out.println(connections);
-                        } else if (packetData.startsWith("NEWSESSION")) {
-                            sessions.put(sessionId, new GameSession(connection, sessionId));
+                        } else if (packetData.startsWith("NEWSESSION=")) {
+                            sessions.put(sessionId, new GameSession(connection, sessionId,
+                                    Integer.parseInt(packetData.split("=")[1])));
                             //connection.send("OK:" + sessionId);
                             sessionId++;
 

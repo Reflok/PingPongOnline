@@ -35,6 +35,12 @@ public class PlayerModel implements PPOGameObject {
         }
     }
 
+    public void reset() {
+        y = PPOModel.HEIGHT / 2;
+        direction = STOP;
+
+    }
+
     public synchronized int getDirection() {
         return direction;
     }

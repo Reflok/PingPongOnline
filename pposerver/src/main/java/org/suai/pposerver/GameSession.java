@@ -33,13 +33,16 @@ public class GameSession implements Runnable {
 
     private int sessnum;
 
-    public GameSession(UDPConnection connection1, int sessnum) {
+    private int maxScore;
+
+    public GameSession(UDPConnection connection1, int sessnum, int maxScore) {
+        this.maxScore = maxScore;
         this.connection1 = connection1;
         this.sessnum = sessnum;
         connection1.setPlayerNum(1);
         connection1.setSession(this);
         numOfPlayers = 1;
-        gameModel = new PPOModel(5, 6, 4, connection1.getName());
+        gameModel = new PPOModel(maxScore, 6, 4, connection1.getName());
         state = STATE_WAITING;
         new Thread(this).start();
     }
@@ -113,6 +116,12 @@ public class GameSession implements Runnable {
         //if (state == STATE_PLAY) {
             gameModel.update();
         //}
+
+        if (gameModel.getState() == PPOModel.STATE_WIN1 || gameModel.getState() == PPOModel.STATE_WIN2) {
+            gameModel = new PPOModel(maxScore, 6, 4, connection1.getName());
+            gameModel.setName2(connection2.getName());
+            gameModel.setState(PPOModel.STATE_START1);
+        }
 
         wait = (1000 / 40 - (System.nanoTime() - packetSendTimer) / 1000000);
 

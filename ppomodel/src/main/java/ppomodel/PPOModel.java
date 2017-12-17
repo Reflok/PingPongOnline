@@ -5,8 +5,8 @@ import java.util.logging.Logger;
 public class PPOModel {
     private static Logger logger = Logger.getLogger("");
 
-    public static final int WIDTH = 700;
-    public static final int HEIGHT = 500;
+    public static final int WIDTH = 800;
+    public static final int HEIGHT = 600;
     public static final int FPS = 60;
     public static final int timePerFrame = 1000/FPS;
 
@@ -118,7 +118,7 @@ public class PPOModel {
             state = STATE_START1;
             ball.reset();
 
-            if (player1Score > maxScore) {
+            if (player1Score >= maxScore) {
                 state = STATE_WIN1;
             }
         } else if(playerNum == PLAYER_2) {
@@ -126,12 +126,13 @@ public class PPOModel {
             state = STATE_START2;
             ball.reset();
 
-            if (player1Score > maxScore) {
+            if (player2Score >= maxScore) {
                 state = STATE_WIN2;
             }
         }
 
-        timer = System.currentTimeMillis();
+        player1.reset();
+        player2.reset();
     }
 
 

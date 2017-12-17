@@ -14,6 +14,7 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
     private Connector connector;
     private JPanel contentPane;
     private JTextField nameField;
+    private JTextField maxScoreField;
     private JList jList;
     private DefaultListModel<String> listModel;
 
@@ -51,6 +52,10 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
         createNewButton.setBounds(20, 90, 100, 30);
         createNewButton.addActionListener(e -> requestNewSession());
 
+        maxScoreField = new JTextField();
+        maxScoreField.setBounds(125, 90, 30, 30);
+
+        contentPane.add(maxScoreField);
         contentPane.add(jList);
         contentPane.add(updateButton);
         contentPane.add(submitButton);
@@ -140,13 +145,22 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
             return;
         }
 
+        int maxScore;
+
+        try {
+            maxScore = Integer.parseInt(maxScoreField.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Max score must be numerical");
+            return;
+        }
+
         boolean ok = initConnection(nameField.getText());
         if (!ok) {
             JOptionPane.showMessageDialog(null, "Please choose different name");
             return;
         }
 
-        connector.send("NEWSESSION");
+        connector.send("NEWSESSION=" + maxScore);
 
         playGame();
 
