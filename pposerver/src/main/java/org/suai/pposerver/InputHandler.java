@@ -58,7 +58,7 @@ public class InputHandler implements Runnable {
 
                             connection.send("OK");
                             connections.put(addr+port, connection);
-                            System.out.println("Putting " + connection);
+                            System.out.println(connections);
                         } else if (packetData.startsWith("NEWSESSION")) {
                             sessions.put(sessionId, new GameSession(connection, sessionId));
                             //connection.send("OK:" + sessionId);
@@ -80,7 +80,7 @@ public class InputHandler implements Runnable {
                             if (connection1 != null) {
                                 connection1.send("END");
                                 connections.remove(connection1.getAddress() + connection1.getPort());
-                                System.out.println("Deleting " + connection1);
+                                System.out.println(connections);
                             }
 
                             if (connection2 != null) {
@@ -89,7 +89,8 @@ public class InputHandler implements Runnable {
                             }
 
                             sessions.remove(connection.getSession().getSessnum());
-                            connection.handlePacket(packetData);
+                            connection.getSession().addPacket("END");
+                            System.out.println(connections);
 
                         } else {
                             connection.handlePacket(packetData);
@@ -140,7 +141,6 @@ public class InputHandler implements Runnable {
         }
 
         connection = new UDPConnection(addr, Integer.parseInt(port), packetData);
-        connections.put(addr, connection);
 
         return connection;
     }

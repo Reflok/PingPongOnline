@@ -21,6 +21,7 @@ public class ModelUpdater implements Runnable {
 
         while (isActive()) {
             String input = connector.receive();
+
             if (input.equals("END")) {
                 view.dispose();
                 return;
