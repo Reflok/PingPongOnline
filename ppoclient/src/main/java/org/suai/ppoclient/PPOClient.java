@@ -1,26 +1,37 @@
 package org.suai.ppoclient;
 
 import ppomodel.PPOModel;
-import ppoview.PPOGameView;
+import org.suai.ppoview.PPOGameView;
 
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.net.*;
 import java.util.logging.*;
 
-public class PPOClient implements Runnable, KeyListener {
+public class PPOClient extends JFrame implements Runnable, KeyListener {
     private static Logger logger = Logger.getLogger("");
     private static final boolean APPEND = false;
 
     private static PPOModel game;
     private static PPOGameView view;
     private static Connector connector;
-    private static String state = "STOP";
+    private static String curState = "STOP";
     private boolean upPressed = false;
     private boolean downPressed = false;
     public boolean active = false;
 
+
+    public PPOClient() {
+        setVisible(true);setLocationRelativeTo(null);
+        setLayout(null);
+        setResizable(false);
+        setSize(500, 300);
+        setVisible(true);
+        requestFocus();
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
 
     public static void main (String[] args) {
         //logger set up
@@ -45,7 +56,7 @@ public class PPOClient implements Runnable, KeyListener {
         try {
             socket = new DatagramSocket();
 
-            connector = new Connector(socket, InetAddress.getByName("localhost"), 5000);
+            connector = new Connector(InetAddress.getByName("localhost"), 5000);
 
             boolean f = false;
             int i = 1;
@@ -55,8 +66,8 @@ public class PPOClient implements Runnable, KeyListener {
                 i++;
             }
 
-            int sess = requestNewSession(socket);
-
+            //connector.send("CONNECTTO=0");
+            requestNewSession(socket);
 
 
             //new Thread(connector).start();
@@ -66,7 +77,6 @@ public class PPOClient implements Runnable, KeyListener {
             view = new PPOGameView(game, PPOModel.WIDTH, PPOModel.HEIGHT);
             new Thread(new PPOClient()).start();
             Thread.sleep(2000);
-            connector.send("READY");
 
             while (10 < System.currentTimeMillis()) {
                 byte[] databuffer = new byte[1024];
@@ -140,8 +150,6 @@ public class PPOClient implements Runnable, KeyListener {
     }
 
     public void run() {
-        //PPOModel game = new PPOModel(5, 5, 3);
-        //PPOGameView view = new PPOGameView(game, PPOModel.WIDTH, PPOModel.HEIGHT);
         view.addKeyListener(this);
 
         boolean active = true;
@@ -160,14 +168,14 @@ public class PPOClient implements Runnable, KeyListener {
             view.draw();
 
             if (upPressed && downPressed || !downPressed && !upPressed) {
-                state = "STOP";
+                curState = "STOP";
             } else if (upPressed) {
-                state = "UP";
+                curState = "UP";
             } else if (downPressed) {
-                state = "DOWN";
+                curState = "DOWN";
             }
 
-            connector.send(state);
+            connector.send(curState);
 
             wait = (timePerFrame - (System.nanoTime() - timer)/1000000);
 
@@ -189,10 +197,10 @@ public class PPOClient implements Runnable, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_W) {
-            state = "UP";
+            curState = "UP";
             upPressed = true;
         } else if (e.getKeyCode() == KeyEvent.VK_S) {
-            state = "DOWN";
+            curState = "DOWN";
             downPressed = true;
 
         }
@@ -201,7 +209,7 @@ public class PPOClient implements Runnable, KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S) {
-            state = "STOP";
+            curState = "STOP";
         }
 
         if (e.getKeyCode() == KeyEvent.VK_W) {

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,8 +18,8 @@ public class Connector implements Runnable {
     private int port;
     private DatagramSocket socket;
 
-    public Connector(DatagramSocket socket, InetAddress addr, int port) {
-        this.socket = socket;
+    public Connector(InetAddress addr, int port) throws SocketException {
+        this.socket = new DatagramSocket();
         this.addr = addr;
         this.port = port;
 
@@ -47,6 +48,18 @@ public class Connector implements Runnable {
 
     }
 
+    public String receive() {
+        byte[] databuffer = new byte[1024];
+        DatagramPacket packet = new DatagramPacket(databuffer, databuffer.length);
+
+        try {
+            socket.receive(packet);
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Failed to receive packet", e);
+        }
+        return new String(packet.getData(), packet.getOffset(), packet.getLength());
+
+    }
     public synchronized void setActive(boolean b) { active = b;}
     public synchronized  boolean getActive() { return active; }
 }

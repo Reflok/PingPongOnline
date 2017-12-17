@@ -39,24 +39,27 @@ public class InputHandler implements Runnable {
                         }
                         String port = tokens[2];
 
-                        UDPConnection connection = connections.get(addr);
+                        if (packetData.equals("SESSIONSDATA")) {
+                            new UDPConnection(addr, Integer.parseInt(port), null).send(getSessionsInfo());
+                            continue;
+                        }
+
+                        UDPConnection connection = connections.get(addr+port);
 
 
                         if (connection == null) {
                             connection = newConnection(packetData, addr, port);
 
                             if (connection == null) {
-                                new UDPConnection(packetAddr, Integer.parseInt(port), null).send("FAIL");
+                                new UDPConnection(addr, Integer.parseInt(port), null).send("FAIL");
                                 continue;
                             }
 
                             connection.send("OK");
-                            connections.put(addr, connection);
-                        } else if (packetData.equals("SESSIONSDATA")) {
-                            connection.send(getSessionsInfo());
+                            connections.put(addr+port, connection);
                         } else if (packetData.startsWith("NEWSESSION")) {
                             sessions.put(sessionId, new GameSession(connection));
-                            connection.send("OK:" + sessionId);
+                            //connection.send("OK:" + sessionId);
                             sessionId++;
 
                         } else if (packetData.startsWith("CONNECTTO=")) {
@@ -64,7 +67,7 @@ public class InputHandler implements Runnable {
 
                             if (session != null && session.getNumOfPlayers() < 2) {
                                 session.addConnection(connection);
-                                connection.send("OK");
+                                //connection.send("OK");
                             } else {
                                 connection.send("FAIL");
                             }

@@ -49,7 +49,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>org.suai.ppoclient.PPOClient</mainClass>
+                            <mainClass>org.suai.ppoview.PPOMenuView</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

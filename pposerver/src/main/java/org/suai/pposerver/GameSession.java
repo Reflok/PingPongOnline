@@ -35,7 +35,7 @@ public class GameSession implements Runnable {
         connection1.setSession(this);
         numOfPlayers = 1;
         gameModel = new PPOModel(5, 6, 4, connection1.getName());
-        state = STATE_BEGIN1;
+        state = STATE_WAITING;
         new Thread(this).start();
     }
 
@@ -101,7 +101,9 @@ public class GameSession implements Runnable {
 
     private long updateModel(long packetSendTimer) {
         long wait;
-        gameModel.update();
+        //if (state == STATE_PLAY) {
+            gameModel.update();
+        //}
 
         wait = (1000 / 40 - (System.nanoTime() - packetSendTimer) / 1000000);
 

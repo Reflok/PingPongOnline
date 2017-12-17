@@ -1,4 +1,4 @@
-package ppoview;
+package org.suai.ppoview;
 
 import ppomodel.BallModel;
 import ppomodel.PPOModel;
@@ -6,14 +6,13 @@ import ppomodel.PlayerModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 
-public class PPOGameView extends JPanel implements KeyListener {
+public class PPOGameView extends JFrame {
     private int frameWidth;
     private int frameHeight;
     private JFrame frame;
+    private JPanel contentPane;
     private BufferedImage mainImage;
     private Graphics2D imageGraphics;
 
@@ -25,10 +24,9 @@ public class PPOGameView extends JPanel implements KeyListener {
     private String name1;
     private String name2;
 
-    private String state = "WAIT";
-
 
     public PPOGameView(PPOModel model, int w, int h) {
+        super("Ping Pong Online");
         gameModel = model;
         player1 = gameModel.getPlayer1();
         player2 = gameModel.getPlayer2();
@@ -43,14 +41,15 @@ public class PPOGameView extends JPanel implements KeyListener {
         imageGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         imageGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        frame = new JFrame("Ping Pong Online");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        frame.setContentPane(this);
-        frame.pack();
-        frame.setResizable(false);
-        frame.setSize(frameWidth, frameHeight);
-        frame.setVisible(true);
+        //frame = new JFrame("Ping Pong Online");
+        contentPane = (JPanel) getContentPane();
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setFocusable(true);
+        setContentPane(contentPane);
+        pack();
+        setResizable(false);
+        setSize(frameWidth, frameHeight);
+        setVisible(true);
         requestFocus();
     }
 
@@ -101,31 +100,6 @@ public class PPOGameView extends JPanel implements KeyListener {
                 BallModel.RADIUS * 2, BallModel.RADIUS * 2);
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        int code = e.getKeyCode();
-
-        if (code == KeyEvent.VK_W) {
-            player1.setDirection(PlayerModel.UP);
-        }
-
-        if (code == KeyEvent.VK_S) {
-            player1.setDirection(PlayerModel.DOWN);
-        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        int code = e.getKeyCode();
-
-        if (code == KeyEvent.VK_S || code == KeyEvent.VK_W) {
-            player1.setDirection(PlayerModel.STOP);
-        }
-    }
 
     public String getName1() {
         return name1;
