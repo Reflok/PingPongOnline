@@ -52,13 +52,15 @@ public class InputHandler implements Runnable {
 
                             if (connection == null) {
                                 new UDPConnection(addr, Integer.parseInt(port), null).send("FAIL");
+                                System.out.println("inv name");
                                 continue;
                             }
 
                             connection.send("OK");
                             connections.put(addr+port, connection);
+                            System.out.println("Putting " + connection);
                         } else if (packetData.startsWith("NEWSESSION")) {
-                            sessions.put(sessionId, new GameSession(connection));
+                            sessions.put(sessionId, new GameSession(connection, sessionId));
                             //connection.send("OK:" + sessionId);
                             sessionId++;
 
@@ -71,6 +73,24 @@ public class InputHandler implements Runnable {
                             } else {
                                 connection.send("FAIL");
                             }
+                        } else if (packetData.equals("END")) {
+                            UDPConnection connection1 = connection.getSession().getPlayerConnection(1);
+                            UDPConnection connection2 = connection.getSession().getPlayerConnection(2);
+
+                            if (connection1 != null) {
+                                connection1.send("END");
+                                connections.remove(connection1.getAddress() + connection1.getPort());
+                                System.out.println("Deleting " + connection1);
+                            }
+
+                            if (connection2 != null) {
+                                connection2.send("END");
+                                connections.remove(connection2.getAddress() + connection2.getPort());
+                            }
+
+                            sessions.remove(connection.getSession().getSessnum());
+                            connection.handlePacket(packetData);
+
                         } else {
                             connection.handlePacket(packetData);
                         }
@@ -99,6 +119,7 @@ public class InputHandler implements Runnable {
 
     private String getSessionsInfo() {
         StringBuilder msg = new StringBuilder();
+        msg.append("DATA:");
 
         for (int i = 0; i < sessions.size(); i++) {
             if (sessions.get(i).getNumOfPlayers() < 2) {
@@ -113,6 +134,7 @@ public class InputHandler implements Runnable {
 
         for (UDPConnection c :connections.values()) {
             if (c.getName().equals(packetData)) {
+                System.out.println(c.getName() + " " + packetData);
                 return null;
             }
         }

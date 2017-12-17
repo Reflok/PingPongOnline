@@ -21,19 +21,26 @@ public class ViewUpdater implements Runnable, KeyListener {
     @Override
     public void run() {
         long timer = System.currentTimeMillis();
+        view.render();
+        view.draw();
 
         while (isActive()) {
-            long wait = (1000/200 - (System.currentTimeMillis() - timer));
+            long wait = 1000/200 - (System.currentTimeMillis() - timer);
+
             if (wait > 0) {
+                System.out.println("OK");
                 try {
                     Thread.sleep(wait);
+
+                    if (isActive()) {
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                } catch (NullPointerException e) {
+                    return;
                 }
             }
 
-            view.render();
-            view.draw();
         }
     }
 

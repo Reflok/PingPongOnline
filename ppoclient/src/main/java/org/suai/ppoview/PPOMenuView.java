@@ -14,22 +14,12 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
     private Connector connector;
     private JPanel contentPane;
     private JTextField nameField;
-    private DatagramSocket socket;
     private JList jList;
     private DefaultListModel<String> listModel;
 
-    public PPOMenuView(Connector connector, DatagramSocket socket) {
+    public PPOMenuView(Connector connector) {
         super("PPOMenu");
         this.connector = connector;
-        this.socket = socket;
-
-
-    }
-
-    public void playGame() {
-        setVisible(false);
-
-        new Thread(new PPOGame(this, connector)).start();
 
 
     }
@@ -77,24 +67,11 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    public class Lisnt implements KeyListener {
-        @Override
-        public void keyTyped(KeyEvent e) {
-        }
+    public void playGame() {
+        setVisible(false);
 
-        @Override
-        public void keyPressed(KeyEvent e) {
-            System.out.println(e.getKeyChar());
-
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            System.out.println(e.getKeyChar());
-
-        }
+        new Thread(new PPOGame(this, connector)).start();
     }
-
 
     public void connect() {
         boolean ok = validateInput();
@@ -123,9 +100,6 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
             return false;
         }
 
-        //connector.send(name);
-        //String response = connector.receive();
-
         boolean ok = initConnection(name);
 
         if (!ok) {
@@ -138,14 +112,24 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
 
     public void requestSessionsInfo() {
         connector.send("SESSIONSDATA");
-        String[] sessions = connector.receive().split(":");
+        String[] sessions;
+
+        while (true) {
+            sessions = connector.receive().split(":");
+            if (sessions[0].equals("DATA")) {
+                break;
+            }
+        }
+
+
         listModel.clear();
 
-        for (int i = 0; i < sessions.length; i++) {
+        for (int i = 1; i < sessions.length; i++) {
             //list.add(Integer.parseInt(sessions[i]));
             if (sessions[i].equals("")) {
                 continue;
             }
+
             listModel.addElement("Session " + sessions[i]);
         }
     }
@@ -173,28 +157,11 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
         connector.send(name);
         String str = connector.receive();
 
-        if (str.equals("OK")) {
-            return true;
-        } else {
-            return false;
+        while (!(str.equals("OK") || str.equals("FAIL"))) {
+            str = connector.receive();
         }
-    }
 
-    public static void main(String[] args) {
-
-        DatagramSocket socket = null;
-        try {
-
-
-            Connector connector = new Connector(InetAddress.getByName("localhost"), 5000);
-            new Thread(new PPOMenuView(connector, socket)).run();
-            long i = System.currentTimeMillis();
-
-        } catch (SocketException e) {
-            e.printStackTrace();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+        return str.equals("OK");
     }
 
     @Override

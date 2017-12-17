@@ -43,7 +43,7 @@ public class PPOGameView extends JFrame {
 
         //frame = new JFrame("Ping Pong Online");
         contentPane = (JPanel) getContentPane();
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setFocusable(true);
         setContentPane(contentPane);
         pack();

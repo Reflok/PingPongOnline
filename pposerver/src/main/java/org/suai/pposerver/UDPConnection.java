@@ -12,7 +12,7 @@ public class UDPConnection {
 
     private long timer;
     private String address;
-    int port;
+    private int port;
     private static final long timeoutTime = 1000;
     private GameSession session;
     private int playerNum;
@@ -81,5 +81,10 @@ public class UDPConnection {
 
     public void setInGame(boolean inGame) {
         this.inGame = inGame;
+    }
+    public int getPort() {return port;}
+
+    public String toString() {
+        return address + ":" + port + ":" + name;
     }
 }

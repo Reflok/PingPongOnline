@@ -19,6 +19,8 @@ public class GameSession implements Runnable {
     private boolean p1ready = false;
     private boolean p2ready = false;
 
+    private boolean active = true;
+
     private UDPConnection connection1;
     private UDPConnection connection2;
 
@@ -29,8 +31,11 @@ public class GameSession implements Runnable {
 
     private int numOfPlayers;
 
-    public GameSession(UDPConnection connection1) {
+    private int sessnum;
+
+    public GameSession(UDPConnection connection1, int sessnum) {
         this.connection1 = connection1;
+        this.sessnum = sessnum;
         connection1.setPlayerNum(1);
         connection1.setSession(this);
         numOfPlayers = 1;
@@ -68,7 +73,7 @@ public class GameSession implements Runnable {
         long wait;
 
         try {
-            while (10 < System.currentTimeMillis()) {
+            while (isActive()) {
                 /*if (getState() == STATE_WAITING) {
                     Thread.sleep(100);
                     continue;
@@ -81,6 +86,10 @@ public class GameSession implements Runnable {
                 str = recvPackets.poll(1000/100, TimeUnit.MILLISECONDS);
 
                 if (str != null) {
+
+                    if (str.equals("END")) {
+                        return;
+                    }
 
                     handleInput(str);
                 }
@@ -174,5 +183,17 @@ public class GameSession implements Runnable {
         }
 
         return null;
+    }
+
+    public int getSessnum() {
+        return sessnum;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

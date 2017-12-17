@@ -1,14 +1,18 @@
 package org.suai.ppoclient;
 
+import org.suai.ppoview.PPOGameView;
+import org.suai.ppoview.PPOMenuView;
 import ppomodel.PPOModel;
 
 public class ModelUpdater implements Runnable {
     private Connector connector;
     private PPOModel model;
+    private PPOGameView view;
     private boolean active = true;
 
-    public ModelUpdater(Connector connector, PPOModel model) {
+    public ModelUpdater(Connector connector, PPOModel model, PPOGameView view) {
         this.connector = connector;
+        this.view = view;
         this.model = model;
     }
 
@@ -17,6 +21,11 @@ public class ModelUpdater implements Runnable {
 
         while (isActive()) {
             String input = connector.receive();
+            if (input.equals("END")) {
+                view.dispose();
+                return;
+            }
+
             String[] data = input.split(":");
 
             model.getBall().setX(Integer.parseInt(data[0]));
