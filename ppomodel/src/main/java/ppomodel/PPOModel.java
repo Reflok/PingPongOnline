@@ -8,7 +8,6 @@ public class PPOModel {
     public static final int WIDTH = 800;
     public static final int HEIGHT = 600;
     public static final int FPS = 60;
-    public static final int timePerFrame = 1000/FPS;
 
     public static final int PLAYER_1 = 1;
     public static final int PLAYER_2 = 2;
@@ -34,7 +33,6 @@ public class PPOModel {
     private String name2;
 
     private boolean active;
-    private long timer;
 
     private int state = STATE_WAIT;
 
@@ -80,7 +78,6 @@ public class PPOModel {
                 ball.setX(PPOModel.WIDTH - BallModel.RADIUS - PlayerModel.WIDTH);
                 double diff = (ballY - player2.getY()) / ((double)PlayerModel.HEIGHT / 2);
 
-                //ball.setAngle((int)(ball.getAngle() + 15*diff/Math.abs(90 - ball.getAngle())), true );
                 ball.setAngle(diff * 60);
                 ball.setHspeed(-ball.getHspeed());
 
@@ -88,12 +85,7 @@ public class PPOModel {
                 score(PLAYER_1);
                 ball.setHspeed(-ball.getHspeed());
             }
-            /*if (ballX > PPOModel.WIDTH - RADIUS) {
-                ball.reset();
-            } else {
-                ball.setX(PPOModel.WIDTH - RADIUS - PlayerModel.WIDTH);
-                ball.setVspeed(-ball.getVspeed());
-            }*/
+
         }
 
         if (ballY < BallModel.RADIUS) {

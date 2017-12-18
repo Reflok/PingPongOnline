@@ -52,13 +52,11 @@ public class InputHandler implements Runnable {
 
                             if (connection == null) {
                                 new UDPConnection(addr, Integer.parseInt(port), null).send("FAIL");
-                                System.out.println("inv name");
                                 continue;
                             }
 
                             connection.send("OK");
                             connections.put(addr+port, connection);
-                            System.out.println(connections);
                         } else if (packetData.startsWith("NEWSESSION=")) {
                             sessions.put(sessionId, new GameSession(connection, sessionId,
                                     Integer.parseInt(packetData.split("=")[1])));
@@ -70,11 +68,33 @@ public class InputHandler implements Runnable {
 
                             if (session != null && session.getNumOfPlayers() < 2) {
                                 session.addConnection(connection);
-                                System.out.println(sessions);
-                                //connection.send("OK");
                             } else {
                                 connection.send("FAIL");
                             }
+                        } else if (packetData.startsWith("TONAME=")) {
+                            GameSession sess = null;
+                            String name = packetData.split("=")[1];
+
+                            for (Map.Entry<String, UDPConnection> c : connections.entrySet()) {
+                                UDPConnection con = c.getValue();
+
+                                if (con.getName().equals(name)) {
+                                    if (con.getSession().getNumOfPlayers() < 2) {
+                                        sess = con.getSession();
+                                        break;
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            if (sess == null) {
+                                connection.send("FAIL");
+                            } else {
+                                connection.send("OK");
+                                sess.addConnection(connection);
+                            }
+
                         } else if (packetData.equals("END")) {
                             UDPConnection connection1 = connection.getSession().getPlayerConnection(1);
                             UDPConnection connection2 = connection.getSession().getPlayerConnection(2);
@@ -82,7 +102,6 @@ public class InputHandler implements Runnable {
                             if (connection1 != null) {
                                 connection1.send("END");
                                 connections.remove(connection1.getAddress() + connection1.getPort());
-                                System.out.println(connections);
                             }
 
                             if (connection2 != null) {
@@ -91,9 +110,7 @@ public class InputHandler implements Runnable {
                             }
 
                             sessions.remove(connection.getSession().getSessnum());
-                            System.out.println(sessions);
                             connection.getSession().addPacket("END");
-                            System.out.println(connections);
 
                         } else {
                             connection.handlePacket(packetData);
@@ -124,7 +141,6 @@ public class InputHandler implements Runnable {
     private String getSessionsInfo() {
         StringBuilder msg = new StringBuilder();
         msg.append("DATA:");
-        System.out.println(sessions + " " + sessions.size());
 
         for (Map.Entry<Integer, GameSession> entry : sessions.entrySet()) {
             if (entry.getValue().getNumOfPlayers() < 2) {
@@ -139,7 +155,6 @@ public class InputHandler implements Runnable {
 
         for (UDPConnection c :connections.values()) {
             if (c.getName().equals(packetData)) {
-                System.out.println(c.getName() + " " + packetData);
                 return null;
             }
         }

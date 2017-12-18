@@ -1,4 +1,14 @@
 
-Isquid:S1068"/Remove this unused "connection1" private field.(ƒÍºûÿÿÿÿ
-Isquid:S1068"/Remove this unused "connection2" private field.(€Ÿ«ÿÿÿÿÿ
-tsquid:S1450"ZRemove the "connection2" field and declare it as a local variable in the relevant methods.(€Ÿ«ÿÿÿÿÿ
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¨ı´¤8Äõ‚ †,
+Osquid:S1068".Remove this unused "STATE_PLAY" private field.(íØÉøÿÿÿÿ8ÒåÉà„,
+Qsquid:S1068"0Remove this unused "STATE_BEGIN2" private field.(–±ôÿÿÿÿÿ8šãıà„,
+Lsquid:S1068"+Remove this unused "p2ready" private field.(†÷Şçøÿÿÿÿ8¹ß¨¬†,
+wsquid:S1450"VRemove the "p1ready" field and declare it as a local variable in the relevant methods.(ªßî·ùÿÿÿÿ8¹ß¨¬†,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(éØ»Úûÿÿÿÿ8Äõ‚ †,
+Y
+squid:S106"9Replace this use of System.out or System.err by a logger.(½“¿üÿÿÿÿ8»ı†­†,
+wsquid:S1450"VRemove the "p2ready" field and declare it as a local variable in the relevant methods.(†÷Şçøÿÿÿÿ8¹ß¨¬†,
+Lsquid:S1068"+Remove this unused "p1ready" private field.(ªßî·ùÿÿÿÿ8¹ß¨¬†,
+Ksquid:S1068"0Remove this unused "STATE_BEGIN1" private field.(ÑÍ¦8¹ß¨¬†,
+msquid:S1226"LIntroduce a new variable instead of reusing the parameter "packetSendTimer".(œõÖôúÿÿÿÿ8§Şºâ„,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(÷ª¬úùÿÿÿÿ8Äõ‚ †,

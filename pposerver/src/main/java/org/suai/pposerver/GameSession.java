@@ -172,7 +172,6 @@ public class GameSession implements Runnable {
         } else if (gameModel.getState() == PPOModel.STATE_START2 && playerNum == 2 && tokens[1].equals("SPACE")) {
             gameModel.start();
         }
-        System.out.println(gameModel.getState() + " " + playerNum + " " + tokens[1]);
     }
 
     public int getState() {

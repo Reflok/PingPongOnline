@@ -1,10 +1,9 @@
 
-usquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(²¨œúÿÿÿÿ
-tsquid:S1845"_Rename field "ball" to prevent any misunderstanding/clash with field "BALL" defined on line 16.(ùõ÷ƒ
-squid:S1845"eRename field "player2" to prevent any misunderstanding/clash with field "PLAYER2" defined on line 15.(‹şÀñşÿÿÿÿ
-Jsquid:S1068"0Remove this unused "player1Score" private field.(áë†¡ùÿÿÿÿ
+fsquid:S2184"ECast one of the operands of this subtraction operation to a "double".(´Ã€”øÿÿÿÿ8Øõ‚ †,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÓÀıª8Øõ‚ †,
+Esquid:S1940")Use the opposite operator ("!=") instead.(ïÇÅ¢8Èß¨¬†,
+Jsquid:S1068")Remove this unused "timer" private field.(ˆïÎàşÿÿÿÿ8Øõ‚ †,
+asquid:S2184"ECast one of the operands of this subtraction operation to a "double".(òÚÉ8Øõ‚ †,
 Dsquid:S1068"*Remove this unused "logger" private field.(ò¶÷¿üÿÿÿÿ
-Jsquid:S1068"0Remove this unused "player2Score" private field.(¦È–Èÿÿÿÿÿ
-`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(“–ış
-Fsquid:S1068",Remove this unused "maxScore" private field.(›Ë­„ûÿÿÿÿ
-zsquid:S1845"eRename field "player1" to prevent any misunderstanding/clash with field "PLAYER1" defined on line 14.(‰ò¨Ù
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ıì¼ú8¤¨ÌŞ„,
+usquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(²¨œúÿÿÿÿ

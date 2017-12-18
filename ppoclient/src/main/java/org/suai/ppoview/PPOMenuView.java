@@ -15,6 +15,7 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
     private JPanel contentPane;
     private JTextField nameField;
     private JTextField maxScoreField;
+    private JTextField connectToField;
     private JList jList;
     private DefaultListModel<String> listModel;
 
@@ -29,6 +30,7 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
     public void run() {
         contentPane = (JPanel) getContentPane();
         setSize(400, 300);
+
         JLabel nameLabel = new JLabel("Your name:");
         nameLabel.setBounds(20, 20, 100, 30);
         nameField = new JTextField();
@@ -49,11 +51,21 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
         updateButton.addActionListener(e -> requestSessionsInfo());
 
         JButton createNewButton = new JButton("New session");
-        createNewButton.setBounds(20, 90, 100, 30);
+        createNewButton.setBounds(20, 90, 150, 30);
         createNewButton.addActionListener(e -> requestNewSession());
 
         maxScoreField = new JTextField();
-        maxScoreField.setBounds(125, 90, 30, 30);
+        maxScoreField.setBounds(175, 90, 30, 30);
+
+        JLabel connectToLable = new JLabel("Or connect using name:");
+        connectToLable.setBounds(20, 140, 200, 30);
+
+        connectToField = new JTextField();
+        connectToField.setBounds(20, 175, 100, 30);
+
+        JButton connectToButton = new JButton("Connect");
+        connectToButton.setBounds(125, 175, 150, 30);
+        connectToButton.addActionListener(e -> connectByName());
 
         contentPane.add(maxScoreField);
         contentPane.add(jList);
@@ -62,6 +74,9 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
         contentPane.add(createNewButton);
         contentPane.add(nameField);
         contentPane.add(nameLabel);
+        contentPane.add(connectToLable);
+        contentPane.add(connectToField);
+        contentPane.add(connectToButton);
 
         setLocationRelativeTo(null);
         setLayout(null);
@@ -88,6 +103,37 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
         String session = (String) jList.getSelectedValue();
 
         connector.send("CONNECTTO=" + session.split(" ")[1]);
+
+        playGame();
+    }
+
+    public void connectByName() {
+        String name = nameField.getText();
+
+        if (name.length() < 3) {
+            JOptionPane.showMessageDialog(null, "Name should be at least 3 characters long");
+            return;
+        }
+
+        name = connectToField.getText();
+
+        if (name.length() < 3) {
+            JOptionPane.showMessageDialog(null, "Name should be at least 3 characters long");
+            return;
+        }
+
+        if (!initConnection(nameField.getText())) {
+            JOptionPane.showMessageDialog(null, "Please choose different name");
+            return;
+        }
+
+        connector.send("TONAME=" + name);
+        String response = connector.receive();
+
+        if (!response.equals("OK")) {
+            JOptionPane.showMessageDialog(null, "Name not found or game is full already");
+            return;
+        }
 
         playGame();
     }
