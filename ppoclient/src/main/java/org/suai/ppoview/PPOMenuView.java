@@ -11,12 +11,12 @@ import java.awt.event.*;
 import java.net.*;
 
 public class PPOMenuView extends JFrame implements KeyListener, Runnable {
+
     private Connector connector;
-    private JPanel contentPane;
     private JTextField nameField;
     private JTextField maxScoreField;
     private JTextField connectToField;
-    private JList jList;
+    private JList<String> jList;
     private DefaultListModel<String> listModel;
 
     public PPOMenuView(Connector connector) {
@@ -28,7 +28,7 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
 
     @Override
     public void run() {
-        contentPane = (JPanel) getContentPane();
+        JPanel contentPane = (JPanel) getContentPane();
         setSize(400, 300);
 
         JLabel nameLabel = new JLabel("Your name:");
@@ -43,7 +43,7 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
         listModel = new DefaultListModel<>();
         requestSessionsInfo();
 
-        jList = new JList(listModel);
+        jList = new JList<>(listModel);
         jList.setBounds(290, 20, 100, 200);
 
         JButton updateButton = new JButton("Update");
@@ -87,43 +87,43 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    public void playGame() {
+    private void playGame() {
         setVisible(false);
 
         new Thread(new PPOGame(this, connector)).start();
     }
 
-    public void connect() {
+    private void connect() {
         boolean ok = validateInput();
 
         if (!ok) {
             return;
         }
 
-        String session = (String) jList.getSelectedValue();
+        String session = jList.getSelectedValue();
 
         connector.send("CONNECTTO=" + session.split(" ")[1]);
 
         playGame();
     }
 
-    public void connectByName() {
+    private void connectByName() {
         String name = nameField.getText();
 
         if (name.length() < 3) {
-            JOptionPane.showMessageDialog(null, "Name should be at least 3 characters long");
+            showNameLengthError();
             return;
         }
 
         name = connectToField.getText();
 
         if (name.length() < 3) {
-            JOptionPane.showMessageDialog(null, "Name should be at least 3 characters long");
+            showNameLengthError();
             return;
         }
 
         if (!initConnection(nameField.getText())) {
-            JOptionPane.showMessageDialog(null, "Please choose different name");
+            showNameDifferent();
             return;
         }
 
@@ -131,18 +131,18 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
         String response = connector.receive();
 
         if (!response.equals("OK")) {
-            JOptionPane.showMessageDialog(null, "Name not found or game is full already");
+
             return;
         }
 
         playGame();
     }
 
-    public boolean validateInput() {
+    private boolean validateInput() {
         String name = nameField.getText();
 
         if (name.length() < 3) {
-            JOptionPane.showMessageDialog(null, "Name should be at least 3 characters long");
+            showNameLengthError();
             return false;
         }
 
@@ -154,14 +154,14 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
         boolean ok = initConnection(name);
 
         if (!ok) {
-            JOptionPane.showMessageDialog(null, "Please choose different name");
+            showNameDifferent();
             return false;
         }
 
         return true;
     }
 
-    public void requestSessionsInfo() {
+    private void requestSessionsInfo() {
         connector.send("SESSIONSDATA");
         String[] sessions;
 
@@ -176,7 +176,6 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
         listModel.clear();
 
         for (int i = 1; i < sessions.length; i++) {
-            //list.add(Integer.parseInt(sessions[i]));
             if (sessions[i].equals("")) {
                 continue;
             }
@@ -187,7 +186,7 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
 
     private void requestNewSession() {
         if (nameField.getText().length() < 3) {
-            JOptionPane.showMessageDialog(null, "Name should be at least 3 characters long");
+            showNameLengthError();
             return;
         }
 
@@ -202,7 +201,7 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
 
         boolean ok = initConnection(nameField.getText());
         if (!ok) {
-            JOptionPane.showMessageDialog(null, "Please choose different name");
+            showNameDifferent();
             return;
         }
 
@@ -226,12 +225,11 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
 
     @Override
     public void keyTyped(KeyEvent e) {
-
+        //unused
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println(">");
         if (e.getKeyCode() == KeyEvent.VK_W) {
             connector.send("UP");
         } else if (e.getKeyCode() == KeyEvent.VK_S) {
@@ -241,10 +239,17 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_W) {
-            connector.send("STOP");
-        } else if (e.getKeyCode() == KeyEvent.VK_S) {
+        if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S) {
             connector.send("STOP");
         }
     }
+
+    private void showNameLengthError() {
+        JOptionPane.showMessageDialog(null, "Name not found or game is full already");
+    }
+
+    private void showNameDifferent() {
+        JOptionPane.showMessageDialog(null, "Please choose different name");
+    }
+
 }

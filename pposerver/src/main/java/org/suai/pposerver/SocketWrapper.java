@@ -1,35 +1,21 @@
 package org.suai.pposerver;
 
-
-
 import java.io.*;
 import java.net.*;
-import java.util.*;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.*;
 
-//receives packets and hands them to handler
 public class SocketWrapper implements Runnable {
     private static Logger logger = Logger.getLogger("");
 
-    private static final String OK = "ACCEPTED";
-
     private InputHandler inputHandler;
-    private int socketPort;
     private static DatagramSocket socket;
     private boolean active = false;
-    private ExecutorService executor = Executors.newFixedThreadPool(3);
 
-    public SocketWrapper(int portNumber, InputHandler inputHandler) {
+    SocketWrapper(int portNumber, InputHandler inputHandler) {
         this.inputHandler = inputHandler;
 
-        socketPort = portNumber;
-
-
         try {
-            socket = new DatagramSocket(socketPort);
+            socket = new DatagramSocket(portNumber);
         } catch (SocketException e) {
             logger.log(Level.SEVERE, "Failed to open up a socket", e);
         }
@@ -48,9 +34,6 @@ public class SocketWrapper implements Runnable {
 
                 inputHandler.handlePacket(new String(recvPacket.getData(), recvPacket.getOffset(),
                         recvPacket.getLength()) + ":" + recvPacket.getAddress().toString() + ":" + recvPacket.getPort());
-
-                //tell sender that package is received
-                //send(recvPacket.getAddress(), recvPacket.getPort(), OK);
             }
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Failed to send or receive packet", e);
@@ -60,7 +43,7 @@ public class SocketWrapper implements Runnable {
         }
     }
 
-    public static synchronized void send(InetAddress addr, int port, String message) throws IOException {
+    static synchronized void send(InetAddress addr, int port, String message) throws IOException {
         DatagramPacket sendPacket = new DatagramPacket(message.getBytes(), message.getBytes().length, addr, port);
         socket.send(sendPacket);
     }

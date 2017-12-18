@@ -8,10 +8,10 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 public class PPOGame implements Runnable, WindowListener {
-    PPOMenuView menu;
-    Connector connector;
-    ViewUpdater viewUpdater;
-    ModelUpdater modelUpdater;
+    private PPOMenuView menu;
+    private Connector connector;
+    private ViewUpdater viewUpdater;
+    private ModelUpdater modelUpdater;
 
 
     public PPOGame(PPOMenuView menu, Connector connector) {
@@ -36,12 +36,12 @@ public class PPOGame implements Runnable, WindowListener {
 
     @Override
     public void windowOpened(WindowEvent e) {
-
+        //unused
     }
 
     @Override
     public void windowClosing(WindowEvent e) {
-
+        //unused
     }
 
     @Override
@@ -53,21 +53,21 @@ public class PPOGame implements Runnable, WindowListener {
 
     @Override
     public void windowIconified(WindowEvent e) {
-
+        //unused
     }
 
     @Override
     public void windowDeiconified(WindowEvent e) {
-
+        //unused
     }
 
     @Override
     public void windowActivated(WindowEvent e) {
-
+        //unused
     }
 
     @Override
     public void windowDeactivated(WindowEvent e) {
-
+        //unused
     }
 }

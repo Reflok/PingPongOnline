@@ -11,14 +11,6 @@ import java.util.logging.Logger;
 public class GameSession implements Runnable {
     private static final Logger logger = Logger.getLogger("");
 
-    private static final int STATE_WAITING = 0;
-    private static final int STATE_PLAY = 1;
-    private static final int STATE_BEGIN1 = 2;
-    private static final int STATE_BEGIN2 = 3;
-
-    private boolean p1ready = false;
-    private boolean p2ready = false;
-
     private boolean active = true;
 
     private UDPConnection connection1;
@@ -27,7 +19,6 @@ public class GameSession implements Runnable {
     private LinkedBlockingQueue<String> recvPackets = new LinkedBlockingQueue<>();
 
     private PPOModel gameModel;
-    private int state;
 
     private int numOfPlayers;
 
@@ -35,7 +26,7 @@ public class GameSession implements Runnable {
 
     private int maxScore;
 
-    public GameSession(UDPConnection connection1, int sessnum, int maxScore) {
+    GameSession(UDPConnection connection1, int sessnum, int maxScore) {
         this.maxScore = maxScore;
         this.connection1 = connection1;
         this.sessnum = sessnum;
@@ -43,11 +34,10 @@ public class GameSession implements Runnable {
         connection1.setSession(this);
         numOfPlayers = 1;
         gameModel = new PPOModel(maxScore, 6, 4, connection1.getName());
-        state = STATE_WAITING;
         new Thread(this).start();
     }
 
-    public void addConnection(UDPConnection connection2) {
+    void addConnection(UDPConnection connection2) {
         numOfPlayers = 2;
         this.connection2 = connection2;
         connection2.setSession(this);
@@ -58,7 +48,7 @@ public class GameSession implements Runnable {
     }
 
 
-    public void addPacket(String packet) {
+    void addPacket(String packet) {
         try {
             recvPackets.put(packet);
         } catch (InterruptedException e) {
@@ -77,15 +67,6 @@ public class GameSession implements Runnable {
 
         try {
             while (isActive()) {
-                /*if (getState() == STATE_WAITING) {
-                    Thread.sleep(100);
-                    continue;
-                } else if (getState() == STATE_BEGIN1) {
-                    gameModel = new PPOModel(5, 15, 9);
-                }*/
-
-
-
                 str = recvPackets.poll(1000/100, TimeUnit.MILLISECONDS);
 
                 if (str != null) {
@@ -113,9 +94,7 @@ public class GameSession implements Runnable {
 
     private long updateModel(long packetSendTimer) {
         long wait;
-        //if (state == STATE_PLAY) {
-            gameModel.update();
-        //}
+        gameModel.update();
 
         if (gameModel.getState() == PPOModel.STATE_WIN1 || gameModel.getState() == PPOModel.STATE_WIN2) {
             gameModel = new PPOModel(maxScore, 6, 4, connection1.getName());
@@ -128,13 +107,13 @@ public class GameSession implements Runnable {
         if (wait <= 0) {
             String message =
                     Integer.toString((int) gameModel.getBall().getX()) + ":" +
-                    Integer.toString((int) gameModel.getBall().getY()) + ":" +
-                    Integer.toString((int) gameModel.getPlayer1().getX()) + ":" +
-                    Integer.toString((int) gameModel.getPlayer1().getY()) + ":" +
-                    Integer.toString((int) gameModel.getPlayer2().getX()) + ":" +
-                    Integer.toString((int) gameModel.getPlayer2().getY()) + ":" +
-                    gameModel.getName1() + ":" + gameModel.getName2() + ":"
-                    + gameModel.getPlayer1Score() + ":" + gameModel.getPlayer2Score();
+                            Integer.toString((int) gameModel.getBall().getY()) + ":" +
+                            Integer.toString((int) gameModel.getPlayer1().getX()) + ":" +
+                            Integer.toString((int) gameModel.getPlayer1().getY()) + ":" +
+                            Integer.toString((int) gameModel.getPlayer2().getX()) + ":" +
+                            Integer.toString((int) gameModel.getPlayer2().getY()) + ":" +
+                            gameModel.getName1() + ":" + gameModel.getName2() + ":"
+                            + gameModel.getPlayer1Score() + ":" + gameModel.getPlayer2Score();
 
 
             connection1.send(message);
@@ -153,18 +132,16 @@ public class GameSession implements Runnable {
         int playerNum = Integer.parseInt(tokens[0]);
 
         if (gameModel.getState() == PPOModel.STATE_PLAY) {
-            if (tokens[1].equals("DOWN")) {
-                gameModel.getPlayer(playerNum).setDirection(PlayerModel.DOWN);
-            } else if (tokens[1].equals("UP")) {
-                gameModel.getPlayer(playerNum).setDirection(PlayerModel.UP);
-            } else if (tokens[1].equals("STOP")) {
-                gameModel.getPlayer(playerNum).setDirection(PlayerModel.STOP);
-            } else if (tokens[1].equals("READY")) {
-                if (playerNum == 1) {
-                    p1ready = true;
-                } else if (playerNum == 2) {
-                    p2ready = true;
-                }
+            switch (tokens[1]) {
+                case "DOWN":
+                    gameModel.getPlayer(playerNum).setDirection(PlayerModel.DOWN);
+                    break;
+                case "UP":
+                    gameModel.getPlayer(playerNum).setDirection(PlayerModel.UP);
+                    break;
+                case "STOP":
+                    gameModel.getPlayer(playerNum).setDirection(PlayerModel.STOP);
+                    break;
             }
         } else if (gameModel.getState() == PPOModel.STATE_START1 && playerNum == 1 && tokens[1].equals("SPACE")) {
             gameModel.start();
@@ -174,19 +151,12 @@ public class GameSession implements Runnable {
         }
     }
 
-    public int getState() {
-        return state;
-    }
 
-    public PPOModel getGameModel() {
-        return gameModel;
-    }
-
-    public int getNumOfPlayers() {
+    int getNumOfPlayers() {
         return numOfPlayers;
     }
 
-    public UDPConnection getPlayerConnection(int playerNum) {
+    UDPConnection getPlayerConnection(int playerNum) {
         if (playerNum == 1) {
             return connection1;
         } else if (playerNum == 2) {
@@ -196,15 +166,12 @@ public class GameSession implements Runnable {
         return null;
     }
 
-    public int getSessnum() {
+    int getSessnum() {
         return sessnum;
     }
 
-    public boolean isActive() {
+    private boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
 }

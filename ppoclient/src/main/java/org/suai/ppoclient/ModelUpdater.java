@@ -1,7 +1,6 @@
 package org.suai.ppoclient;
 
 import org.suai.ppoview.PPOGameView;
-import org.suai.ppoview.PPOMenuView;
 import ppomodel.PPOModel;
 
 public class ModelUpdater implements Runnable {
@@ -10,7 +9,7 @@ public class ModelUpdater implements Runnable {
     private PPOGameView view;
     private boolean active = true;
 
-    public ModelUpdater(Connector connector, PPOModel model, PPOGameView view) {
+    ModelUpdater(Connector connector, PPOModel model, PPOGameView view) {
         this.connector = connector;
         this.view = view;
         this.model = model;
@@ -46,11 +45,11 @@ public class ModelUpdater implements Runnable {
         }
     }
 
-    public boolean isActive() {
+    private boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    void setActive(boolean active) {
         this.active = active;
     }
 }

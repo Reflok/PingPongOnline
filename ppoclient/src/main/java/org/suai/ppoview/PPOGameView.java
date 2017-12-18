@@ -11,8 +11,6 @@ import java.awt.image.BufferedImage;
 public class PPOGameView extends JFrame {
     private int frameWidth;
     private int frameHeight;
-    private JFrame frame;
-    private JPanel contentPane;
     private BufferedImage mainImage;
     private Graphics2D imageGraphics;
 
@@ -41,8 +39,7 @@ public class PPOGameView extends JFrame {
         imageGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         imageGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        //frame = new JFrame("Ping Pong Online");
-        contentPane = (JPanel) getContentPane();
+        JPanel contentPane = (JPanel) getContentPane();
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setFocusable(true);
         setContentPane(contentPane);
@@ -75,6 +72,8 @@ public class PPOGameView extends JFrame {
 
         imageGraphics.setColor(Color.WHITE);
 
+        imageGraphics.drawLine(WIDTH / 2, 0, WIDTH / 2, HEIGHT);
+
         imageGraphics.drawString(gameModel.getName1(), 20, PPOModel.HEIGHT - 20);
         imageGraphics.drawString(gameModel.getName2(), PPOModel.WIDTH - len1 - 20, PPOModel.HEIGHT - 20);
 
@@ -98,22 +97,5 @@ public class PPOGameView extends JFrame {
 
         imageGraphics.fillOval((int) ball.getX() - BallModel.RADIUS, (int) ball.getY() - BallModel.RADIUS,
                 BallModel.RADIUS * 2, BallModel.RADIUS * 2);
-    }
-
-
-    public String getName1() {
-        return name1;
-    }
-
-    public void setName1(String name1) {
-        this.name1 = name1;
-    }
-
-    public String getName2() {
-        return name2;
-    }
-
-    public void setName2(String name2) {
-        this.name2 = name2;
     }
 }

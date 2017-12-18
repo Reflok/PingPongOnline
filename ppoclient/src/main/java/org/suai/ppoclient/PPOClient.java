@@ -1,12 +1,7 @@
 package org.suai.ppoclient;
 
 import org.suai.ppoview.PPOMenuView;
-import ppomodel.PPOModel;
-import org.suai.ppoview.PPOGameView;
 
-import javax.swing.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.net.*;
 import java.util.logging.*;
@@ -17,8 +12,6 @@ public class PPOClient {
 
     public static void main (String[] args) {
         //logger set up
-        //Logger.getLogger("").setLevel(Level.FINEST);
-
 
         try {
             logger.setUseParentHandlers(false);

@@ -14,35 +14,31 @@ public class PlayerModel implements PPOGameObject {
 
     private int direction;// >0 - down, =0 stop, <0 up
 
-    public PlayerModel(int x, int speed) {
+    PlayerModel(int x, int speed) {
         this.x = x;
-        y = PPOModel.HEIGHT / 2;
+        y = (double) PPOModel.HEIGHT / 2;
         direction = STOP;
         this.speed = speed;
     }
 
-    public void update() {
+    void update() {
         if (direction != STOP) {
             y += speed * direction/Math.abs(direction);
         }
 
-        if (y > PPOModel.HEIGHT - HEIGHT / 2) {
-            y = PPOModel.HEIGHT - HEIGHT / 2;
+        if (y > PPOModel.HEIGHT - (double) HEIGHT / 2) {
+            y = PPOModel.HEIGHT - (double) HEIGHT / 2;
         }
 
         if (y < HEIGHT / 2) {
-            y = HEIGHT / 2;
+            y = (double) HEIGHT / 2;
         }
     }
 
-    public void reset() {
-        y = PPOModel.HEIGHT / 2;
+    void reset() {
+        y = (double) PPOModel.HEIGHT / 2;
         direction = STOP;
 
-    }
-
-    public synchronized int getDirection() {
-        return direction;
     }
 
     public synchronized void setDirection(int dir) {
@@ -66,7 +62,7 @@ public class PlayerModel implements PPOGameObject {
 
     @Override
     public void setVspeed(double newval) {
-        //vspeed = newval;
+        //unused
     }
 
     @Override

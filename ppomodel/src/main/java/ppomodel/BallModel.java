@@ -14,27 +14,27 @@ public class BallModel implements PPOGameObject {
     private double angle;
     private Random gen = new Random(System.currentTimeMillis());
 
-    public BallModel(int totalSpeed){
+    BallModel(int totalSpeed){
         this.totalSpeed = totalSpeed;
         reset();
 
     }
 
-    public void update() {
+    void update() {
         y += vspeed;
         x += hspeed;
 
 
     }
 
-    public void reset() {
-        x = PPOModel.WIDTH / 2;
-        y = PPOModel.HEIGHT / 2;
+    void reset() {
+        x = (double) PPOModel.WIDTH / 2;
+        y = (double) PPOModel.HEIGHT / 2;
 
     }
 
-    public void start() {
-        angle = -45 + gen.nextInt(90);
+    void start() {
+        angle = -45 + (double) gen.nextInt(90);
 
         vspeed = totalSpeed * Math.sin(Math.toRadians(angle));
         hspeed = -totalSpeed * Math.cos(Math.toRadians(angle));
@@ -56,20 +56,13 @@ public class BallModel implements PPOGameObject {
         this.y = yPos;
     }
 
-    public void generateDirection(boolean leftOrRight) {
-        if (leftOrRight) {
-
-        }
-    }
-
     public void setVspeed(double newval) {vspeed = newval;}
     public void setHspeed(double newval) {hspeed = newval;}
 
-    public double getVspeed() {return vspeed;}
+    double getVspeed() {return vspeed;}
     public double getHspeed() {return hspeed;}
 
-    public double getAngle() {return angle;}
-    public void setAngle(double newval) {
+    void setAngle(double newval) {
         angle = newval;
 
         vspeed = totalSpeed * Math.sin(Math.toRadians(angle));

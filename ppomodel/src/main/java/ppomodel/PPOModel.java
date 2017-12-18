@@ -1,19 +1,15 @@
 package ppomodel;
 
-import java.util.logging.Logger;
-
 public class PPOModel {
-    private static Logger logger = Logger.getLogger("");
 
     public static final int WIDTH = 800;
     public static final int HEIGHT = 600;
-    public static final int FPS = 60;
 
-    public static final int PLAYER_1 = 1;
-    public static final int PLAYER_2 = 2;
-    public static final int GAME_BALL = 0;
+    private static final int PLAYER_1 = 1;
+    private static final int PLAYER_2 = 2;
+    private static final int GAME_BALL = 0;
 
-    public static final int STATE_WAIT = 0;
+    private static final int STATE_WAIT = 0;
     public static final int STATE_PLAY = 1;
     public static final int STATE_START1 = 2;
     public static final int STATE_START2 = 3;
@@ -32,15 +28,13 @@ public class PPOModel {
     private String name1;
     private String name2;
 
-    private boolean active;
-
     private int state = STATE_WAIT;
 
 
     public PPOModel(int maxScore, int totalSpeed, int playerSpeed, String name) {
         this.maxScore = maxScore;
 
-        player1 = new PlayerModel(0 + PlayerModel.WIDTH / 2, playerSpeed);
+        player1 = new PlayerModel(PlayerModel.WIDTH / 2, playerSpeed);
         player2 = new PlayerModel(WIDTH - PlayerModel.WIDTH / 2, playerSpeed);
         ball = new BallModel(totalSpeed);
         name1 = name;
@@ -49,7 +43,7 @@ public class PPOModel {
     }
 
     public void update() {
-        if (!(state == STATE_PLAY)) {
+        if (state != STATE_PLAY) {
             return;
         }
 
@@ -75,7 +69,7 @@ public class PPOModel {
         if (ballX > PPOModel.WIDTH - BallModel.RADIUS - PlayerModel.WIDTH) {
             if (ballY - BallModel.RADIUS <= player2.getY() + (double)PlayerModel.HEIGHT / 2 &&
                     ballY + BallModel.RADIUS >= player2.getY() - (double)PlayerModel.HEIGHT / 2) {
-                ball.setX(PPOModel.WIDTH - BallModel.RADIUS - PlayerModel.WIDTH);
+                ball.setX(PPOModel.WIDTH - BallModel.RADIUS - (double) PlayerModel.WIDTH);
                 double diff = (ballY - player2.getY()) / ((double)PlayerModel.HEIGHT / 2);
 
                 ball.setAngle(diff * 60);
@@ -94,7 +88,7 @@ public class PPOModel {
         }
 
         if (ballY > PPOModel.HEIGHT - BallModel.RADIUS) {
-            ball.setY(PPOModel.HEIGHT - BallModel.RADIUS);
+            ball.setY(PPOModel.HEIGHT - (double) BallModel.RADIUS);
             ball.setVspeed(-ball.getVspeed());
         }
     }
@@ -104,7 +98,7 @@ public class PPOModel {
         ball.start();
     }
 
-    public void score(int playerNum) {
+    private void score(int playerNum) {
         if (playerNum == PLAYER_1) {
             player1Score++;
             state = STATE_START1;
@@ -127,21 +121,11 @@ public class PPOModel {
         player2.reset();
     }
 
-
-
-    public synchronized boolean isActive() {
-        return active;
-    }
-
-    public synchronized void setActive(boolean active) {
-        this.active = active;
-    }
-
     public synchronized PlayerModel getPlayer1() {return player1;}
     public synchronized PlayerModel getPlayer2() {return player2;}
     public synchronized BallModel getBall() {return ball;}
 
-    public synchronized PPOGameObject getEntity(int num) {
+    private synchronized PPOGameObject getEntity(int num) {
         if (num == PLAYER_1) {
             return player1;
         } else if (num == PLAYER_2) {

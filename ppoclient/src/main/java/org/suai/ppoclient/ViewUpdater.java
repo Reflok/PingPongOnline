@@ -1,18 +1,20 @@
 package org.suai.ppoclient;
 
 import org.suai.ppoview.PPOGameView;
-import org.suai.ppoview.PPOMenuView;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ViewUpdater implements Runnable, KeyListener {
+    private static Logger logger = Logger.getLogger("");
+
     private PPOGameView view;
     private Connector connector;
     private boolean active;
 
-    public ViewUpdater(PPOGameView view, Connector connector) {
+    ViewUpdater(PPOGameView view, Connector connector) {
         this.view = view;
         this.connector = connector;
         active = true;
@@ -26,13 +28,13 @@ public class ViewUpdater implements Runnable, KeyListener {
             long wait = 1000/200 - (System.currentTimeMillis() - timer);
 
             if (wait > 0) {
-                System.out.println("OK");
                 try {
                     Thread.sleep(wait);
 
 
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    logger.log(Level.SEVERE, "Interrupted", e);
+                    Thread.currentThread().interrupt();
                 } catch (NullPointerException e) {
                     return;
                 }
@@ -49,17 +51,17 @@ public class ViewUpdater implements Runnable, KeyListener {
         }
     }
 
-    public synchronized boolean isActive() {
+    private synchronized boolean isActive() {
         return active;
     }
 
-    public synchronized void setActive(boolean active) {
+    synchronized void setActive(boolean active) {
         this.active = active;
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-
+        //unused
     }
 
     @Override
@@ -79,9 +81,7 @@ public class ViewUpdater implements Runnable, KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_W) {
-            connector.send("STOP");
-        } else if (e.getKeyCode() == KeyEvent.VK_S) {
+        if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S) {
             connector.send("STOP");
         }
     }

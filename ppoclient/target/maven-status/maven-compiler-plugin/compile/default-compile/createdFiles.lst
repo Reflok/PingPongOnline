@@ -1,10 +1,7 @@
 org/suai/ppoview/PPOGameView.class
 org/suai/ppoclient/PPOClient.class
-org/suai/ppoclient/ClientMain.class
 org/suai/ppoclient/ViewUpdater.class
 org/suai/ppoclient/Connector.class
 org/suai/ppoclient/PPOGame.class
-org/suai/ppoview/PPOMenuView$Lisnt.class
-org/suai/ppoview/PPOLoginView.class
 org/suai/ppoview/PPOMenuView.class
 org/suai/ppoclient/ModelUpdater.class
