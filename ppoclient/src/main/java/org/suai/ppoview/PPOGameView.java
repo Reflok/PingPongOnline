@@ -22,7 +22,6 @@ public class PPOGameView extends JFrame {
     private String name1;
     private String name2;
 
-
     public PPOGameView(PPOModel model, int w, int h) {
         super("Ping Pong Online");
         gameModel = model;

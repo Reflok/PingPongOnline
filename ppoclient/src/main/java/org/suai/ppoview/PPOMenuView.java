@@ -22,8 +22,6 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
     public PPOMenuView(Connector connector) {
         super("PPOMenu");
         this.connector = connector;
-
-
     }
 
     @Override
@@ -172,7 +170,6 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
             }
         }
 
-
         listModel.clear();
 
         for (int i = 1; i < sessions.length; i++) {
@@ -208,8 +205,6 @@ public class PPOMenuView extends JFrame implements KeyListener, Runnable {
         connector.send("NEWSESSION=" + maxScore);
 
         playGame();
-
-
     }
 
     private boolean initConnection(String name) {

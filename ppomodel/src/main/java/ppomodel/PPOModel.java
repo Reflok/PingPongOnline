@@ -16,7 +16,6 @@ public class PPOModel {
     public static final int STATE_WIN1 = 4;
     public static final int STATE_WIN2 = 5;
 
-
     private PlayerModel player1;
     private PlayerModel player2;
     private BallModel ball;
@@ -30,7 +29,6 @@ public class PPOModel {
 
     private int state = STATE_WAIT;
 
-
     public PPOModel(int maxScore, int totalSpeed, int playerSpeed, String name) {
         this.maxScore = maxScore;
 
@@ -39,7 +37,6 @@ public class PPOModel {
         ball = new BallModel(totalSpeed);
         name1 = name;
         name2 = "Awaiting connection";
-
     }
 
     public void update() {
@@ -60,7 +57,6 @@ public class PPOModel {
                 double diff = (ballY - player1.getY()) / ((double)PlayerModel.HEIGHT / 2);
 
                 ball.setAngle(diff * 60);
-
             } else {
                 score(PLAYER_2);
             }

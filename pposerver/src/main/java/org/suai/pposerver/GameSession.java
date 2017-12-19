@@ -44,9 +44,7 @@ public class GameSession implements Runnable {
         connection2.setPlayerNum(2);
         gameModel.setName2(connection2.getName());
         gameModel.setState(PPOModel.STATE_START1);
-
     }
-
 
     void addPacket(String packet) {
         try {
@@ -56,7 +54,6 @@ public class GameSession implements Runnable {
             Thread.currentThread().interrupt();
         }
     }
-
 
     @Override
     public void run() {
@@ -77,6 +74,7 @@ public class GameSession implements Runnable {
 
                     handleInput(str);
                 }
+
                 wait = (1000 / 100 - (System.nanoTime() - updateTimer) / 1000000);
 
                 if (wait <= 0) {
@@ -89,11 +87,11 @@ public class GameSession implements Runnable {
             logger.log(Level.SEVERE, "Interrupted", e);
             Thread.currentThread().interrupt();
         }
-
     }
 
     private long updateModel(long packetSendTimer) {
         long wait;
+
         gameModel.update();
 
         if (gameModel.getState() == PPOModel.STATE_WIN1 || gameModel.getState() == PPOModel.STATE_WIN2) {

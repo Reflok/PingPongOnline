@@ -1,9 +1,0 @@
-
-fsquid:S2184"ECast one of the operands of this subtraction operation to a "double".(´Ã€”øÿÿÿÿ8Øõ‚ †,
-gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÓÀýª8Øõ‚ †,
-Esquid:S1940")Use the opposite operator ("!=") instead.(ïÇÅ¢8Èß¨¬†,
-Jsquid:S1068")Remove this unused "timer" private field.(ˆïÎàþÿÿÿÿ8Øõ‚ †,
-asquid:S2184"ECast one of the operands of this subtraction operation to a "double".(òÚÉ8Øõ‚ †,
-Dsquid:S1068"*Remove this unused "logger" private field.(ò¶÷¿üÿÿÿÿ
-gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ýì¼ú8¤¨ÌÞ„,
-usquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(²¨œúÿÿÿÿ

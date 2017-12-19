@@ -11,8 +11,6 @@ public class PPOClient {
     private static final boolean APPEND = false;
 
     public static void main (String[] args) {
-        //logger set up
-
         try {
             logger.setUseParentHandlers(false);
 
@@ -27,7 +25,7 @@ public class PPOClient {
         }
 
         try {
-            Connector connector = new Connector(InetAddress.getByName("localhost"), 5000);
+            Connector connector = new Connector(InetAddress.getByName("10.4.12.233"), 5000);
             new Thread(new PPOMenuView(connector)).start();
         } catch (SocketException e) {
             logger.log(Level.SEVERE, "Can't open socket", e);

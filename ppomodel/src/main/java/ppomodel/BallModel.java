@@ -17,20 +17,16 @@ public class BallModel implements PPOGameObject {
     BallModel(int totalSpeed){
         this.totalSpeed = totalSpeed;
         reset();
-
     }
 
     void update() {
         y += vspeed;
         x += hspeed;
-
-
     }
 
     void reset() {
         x = (double) PPOModel.WIDTH / 2;
         y = (double) PPOModel.HEIGHT / 2;
-
     }
 
     void start() {

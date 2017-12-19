@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 public class Connector {
     private static Logger logger = Logger.getLogger("");
 
-
     private InetAddress addr;
     private int port;
     private DatagramSocket socket;
@@ -20,7 +19,6 @@ public class Connector {
         this.socket = new DatagramSocket();
         this.addr = addr;
         this.port = port;
-
     }
 
     public void send(String str) {
@@ -29,7 +27,6 @@ public class Connector {
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Failed to send packet", e);
         }
-
     }
 
     public String receive() {
@@ -41,7 +38,7 @@ public class Connector {
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Failed to receive packet", e);
         }
-        return new String(packet.getData(), packet.getOffset(), packet.getLength());
 
+        return new String(packet.getData(), packet.getOffset(), packet.getLength());
     }
 }
